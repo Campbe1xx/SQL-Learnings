@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 05 Lesson 01 - ACID Transactions | SQL for Engineers</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; line-height: 1.6; background: #f5f5f5; }
+        .navbar { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 15px 20px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .navbar-content { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .navbar a { color: white; text-decoration: none; font-weight: 600; }
+        .container { max-width: 1000px; margin: 0 auto; background: white; min-height: calc(100vh - 60px); }
+        .breadcrumb { background: #f6f8fa; padding: 15px 20px; border-bottom: 1px solid #e1e4e8; font-size: 0.9em; }
+        .breadcrumb a { color: #667eea; text-decoration: none; }
+        .content { padding: 40px 30px; }
+        .module-header { color: #667eea; margin-bottom: 30px; border-bottom: 3px solid #667eea; padding-bottom: 15px; }
+        .module-header h1 { font-size: 2em; margin-bottom: 5px; }
+        .module-header p { color: #586069; font-size: 1.1em; }
+        .badge { display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 0.85em; font-weight: 600; margin-bottom: 10px; background: #ffc107; color: #24292e; }
+        .section { margin-bottom: 40px; }
+        .section-title { font-size: 1.5em; color: #24292e; margin-bottom: 15px; border-left: 4px solid #667eea; padding-left: 15px; }
+        pre { margin: 15px 0; border-radius: 6px; overflow-x: auto; }
+        code { font-family: 'Courier New', monospace; }
+        table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+        th, td { border: 1px solid #e1e4e8; padding: 10px; text-align: left; }
+        th { background: #f6f8fa; }
+        .nav-buttons { display: flex; justify-content: space-between; gap: 10px; margin-top: 40px; padding-top: 20px; border-top: 1px solid #e1e4e8; }
+        .nav-button { flex: 1; padding: 12px 20px; background: #667eea; color: white; text-decoration: none; border-radius: 6px; text-align: center; font-weight: 600; }
+        .nav-button.secondary { background: #6c757d; }
+    </style>
+</head>
+<body>
+    <div class="navbar"><div class="navbar-content"><a href="../index.html">📘 SQL for Engineers</a><nav><a href="../index.html">Home</a> | <a href="../index.html#modules">Modules</a> | <a href="../index.html#roots">Practice Packs</a></nav></div></div>
+    <div class="breadcrumb"><a href="../index.html">Home</a> / <a href="../index.html#modules">Modules</a> / <a href="module-05.html">Module 05 - Transactions</a> / <strong>Lesson 01</strong></div>
+    <div class="container"><div class="content">
+        <div class="module-header"><h1>🔄 Module 05 · Lesson 01: Transactions &amp; Data Integrity</h1><p>Understand ACID properties, rollback patterns, savepoints, and isolation levels</p><span class="badge">Intermediate</span></div>
+
+        <div class="section"><h2 class="section-title">📖 Lesson Overview</h2><p>This lesson covers transaction fundamentals that keep business data consistent under failure and concurrency.</p></div>
+
+        <div class="section"><h2 class="section-title">🔑 Key Concepts</h2>
+            <h3>ACID Properties</h3>
+            <table>
+                <thead><tr><th>Property</th><th>Meaning</th><th>Manufacturing Example</th></tr></thead>
+                <tbody>
+                    <tr><td><strong>Atomicity</strong></td><td>All steps succeed or all are rolled back</td><td>Booking a part AND updating stock must both succeed</td></tr>
+                    <tr><td><strong>Consistency</strong></td><td>DB moves from one valid state to another</td><td>Stock count never goes negative</td></tr>
+                    <tr><td><strong>Isolation</strong></td><td>Concurrent transactions don't interfere</td><td>Two operators can't book the last part simultaneously</td></tr>
+                    <tr><td><strong>Durability</strong></td><td>Committed data survives crashes</td><td>Completed work order is permanently saved</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="section"><h2 class="section-title">💻 SQL Examples</h2>
+            <h3>Basic Transaction</h3>
+            <pre><code class="language-sql">BEGIN;
+
+  UPDATE spare_parts
+  SET quantity = quantity - 5
+  WHERE part_id = 12;
+
+  INSERT INTO work_orders (machine_id, part_id, quantity_used)
+  VALUES (3, 12, 5);
+
+COMMIT;</code></pre>
+
+            <h3>ROLLBACK on Error</h3>
+            <pre><code class="language-sql">BEGIN;
+
+  UPDATE spare_parts SET quantity = quantity - 5 WHERE part_id = 12;
+
+  -- If something goes wrong:
+  ROLLBACK;
+
+COMMIT;</code></pre>
+
+            <h3>SAVEPOINT</h3>
+            <pre><code class="language-sql">BEGIN;
+  INSERT INTO maintenance_logs (machine_id, technician, work_done) VALUES (1, 'J.Smith', 'Oil change');
+  SAVEPOINT after_log;
+
+  UPDATE machines SET last_maintenance = NOW() WHERE machine_id = 1;
+  -- Undo just the update, keep the log insert
+  ROLLBACK TO after_log;
+
+COMMIT;</code></pre>
+
+            <h3>Isolation Levels</h3>
+            <table>
+                <thead><tr><th>Level</th><th>Dirty Read</th><th>Non-Repeatable Read</th><th>Phantom Read</th></tr></thead>
+                <tbody>
+                    <tr><td>Read Uncommitted</td><td>✅ Possible</td><td>✅ Possible</td><td>✅ Possible</td></tr>
+                    <tr><td>Read Committed</td><td>❌ Prevented</td><td>✅ Possible</td><td>✅ Possible</td></tr>
+                    <tr><td>Repeatable Read</td><td>❌ Prevented</td><td>❌ Prevented</td><td>✅ Possible</td></tr>
+                    <tr><td>Serializable</td><td>❌ Prevented</td><td>❌ Prevented</td><td>❌ Prevented</td></tr>
+                </tbody>
+            </table>
+
+            <pre><code class="language-sql">-- Set isolation level
+BEGIN ISOLATION LEVEL REPEATABLE READ;
+  SELECT * FROM spare_parts WHERE quantity < 10;
+COMMIT;</code></pre>
+        </div>
+
+        <div class="section"><h2 class="section-title">🛡️ Notes / Best Practices</h2><ul style="margin-left: 20px;"><li>Keep transactions short to reduce lock contention.</li><li>Use SAVEPOINTs for partial rollback in multi-step operations.</li></ul></div>
+
+        <div class="nav-buttons">
+            <a href="module-05.html" class="nav-button secondary">← Back to Module 05</a>
+            <a href="../index.html" class="nav-button secondary">Back to Home</a>
+            <a href="module-06.html" class="nav-button">Next Module →</a>
+        </div>
+    </div></div>
+    <script>hljs.highlightAll();</script>
+</body>
+</html>

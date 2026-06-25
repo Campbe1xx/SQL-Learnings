@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Module 06 Lesson 03 - Triggers | SQL for Engineers</title><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/atom-one-dark.min.css"><script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script><style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;line-height:1.6;background:#f5f5f5}.navbar{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:#fff;padding:15px 20px;position:sticky;top:0;z-index:100;box-shadow:0 2px 10px rgba(0,0,0,.1)}.navbar-content{max-width:1200px;margin:0 auto;display:flex;justify-content:space-between;align-items:center}.navbar a{color:#fff;text-decoration:none;font-weight:600}.container{max-width:1000px;margin:0 auto;background:#fff;min-height:calc(100vh - 60px)}.breadcrumb{background:#f6f8fa;padding:15px 20px;border-bottom:1px solid #e1e4e8;font-size:.9em}.breadcrumb a{color:#667eea;text-decoration:none}.content{padding:40px 30px}.module-header{color:#667eea;margin-bottom:30px;border-bottom:3px solid #667eea;padding-bottom:15px}.module-header h1{font-size:2em;margin-bottom:5px}.module-header p{color:#586069;font-size:1.1em}.badge{display:inline-block;padding:4px 8px;border-radius:4px;font-size:.85em;font-weight:600;margin-bottom:10px;background:#dc3545;color:#fff}.section{margin-bottom:40px}.section-title{font-size:1.5em;color:#24292e;margin-bottom:15px;border-left:4px solid #667eea;padding-left:15px}pre{margin:15px 0;border-radius:6px;overflow-x:auto}.nav-buttons{display:flex;justify-content:space-between;gap:10px;margin-top:40px;padding-top:20px;border-top:1px solid #e1e4e8}.nav-button{flex:1;padding:12px 20px;background:#667eea;color:#fff;text-decoration:none;border-radius:6px;text-align:center;font-weight:600}.nav-button.secondary{background:#6c757d}</style></head>
+<body><div class="navbar"><div class="navbar-content"><a href="../index.html">📚 SQL for Engineers</a><nav><a href="../index.html">Home</a> | <a href="../index.html#modules">Modules</a> | <a href="../index.html#roots">Practice Packs</a></nav></div></div><div class="breadcrumb"><a href="../index.html">Home</a> / <a href="../index.html#modules">Modules</a> / <a href="module-06.html">Module 06 - Advanced SQL</a> / <strong>Lesson 03</strong></div><div class="container"><div class="content"><div class="module-header"><h1>🧠 Module 06 · Lesson 03: Triggers</h1><p>Automate database-side reactions to INSERT, UPDATE, and DELETE events</p><span class="badge">Advanced</span></div><div class="section"><h2 class="section-title">📖 Lesson Overview</h2><p>A trigger automatically executes a function when a specific event occurs on a table.</p></div><div class="section"><h2 class="section-title">💻 SQL Examples</h2><h3>Basic Trigger</h3><pre><code class="language-sql">-- Step 1: Create the trigger function
+CREATE OR REPLACE FUNCTION update_machine_last_maintenance()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    UPDATE machines
+    SET last_maintenance = NOW()
+    WHERE machine_id = NEW.machine_id;
+    RETURN NEW;
+END;
+$$;
+
+-- Step 2: Attach it to the table
+CREATE TRIGGER trg_maintenance_update
+AFTER INSERT ON maintenance_logs
+FOR EACH ROW
+EXECUTE FUNCTION update_machine_last_maintenance();</code></pre><p>Now every time a row is inserted into <code>maintenance_logs</code>, the machine's <code>last_maintenance</code> timestamp is automatically updated.</p><h3>Audit Trigger Example</h3><pre><code class="language-sql">-- Track all status changes on machines
+CREATE TABLE machine_audit (
+    audit_id   SERIAL PRIMARY KEY,
+    machine_id INT,
+    old_status VARCHAR(50),
+    new_status VARCHAR(50),
+    changed_at TIMESTAMP DEFAULT NOW()
+);
+
+CREATE OR REPLACE FUNCTION audit_machine_status()
+RETURNS TRIGGER LANGUAGE plpgsql AS $$
+BEGIN
+    IF OLD.status <> NEW.status THEN
+        INSERT INTO machine_audit (machine_id, old_status, new_status)
+        VALUES (OLD.machine_id, OLD.status, NEW.status);
+    END IF;
+    RETURN NEW;
+END;
+$$;
+
+CREATE TRIGGER trg_audit_status
+AFTER UPDATE ON machines
+FOR EACH ROW
+EXECUTE FUNCTION audit_machine_status();</code></pre></div><div class="nav-buttons"><a href="module-06-lesson-02.html" class="nav-button secondary">← Previous Lesson</a><a href="module-06.html" class="nav-button secondary">Back to Module 06</a><a href="module-06-lesson-04.html" class="nav-button">Next Lesson →</a></div></div></div><script>hljs.highlightAll();</script></body></html>

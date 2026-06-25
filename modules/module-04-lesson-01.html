@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 04 Lesson 01 - CREATE, ALTER, DROP | SQL for Engineers</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; line-height: 1.6; background: #f5f5f5; }
+        .navbar { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 15px 20px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .navbar-content { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .navbar a { color: white; text-decoration: none; font-weight: 600; }
+        .container { max-width: 1000px; margin: 0 auto; background: white; min-height: calc(100vh - 60px); }
+        .breadcrumb { background: #f6f8fa; padding: 15px 20px; border-bottom: 1px solid #e1e4e8; font-size: 0.9em; }
+        .breadcrumb a { color: #667eea; text-decoration: none; }
+        .content { padding: 40px 30px; }
+        .module-header { color: #667eea; margin-bottom: 30px; border-bottom: 3px solid #667eea; padding-bottom: 15px; }
+        .module-header h1 { font-size: 2em; margin-bottom: 5px; }
+        .module-header p { color: #586069; font-size: 1.1em; }
+        .badge { display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 0.85em; font-weight: 600; margin-bottom: 10px; background: #ffc107; color: #24292e; }
+        .section { margin-bottom: 40px; }
+        .section-title { font-size: 1.5em; color: #24292e; margin-bottom: 15px; border-left: 4px solid #667eea; padding-left: 15px; }
+        pre { margin: 15px 0; border-radius: 6px; overflow-x: auto; }
+        code { font-family: 'Courier New', monospace; }
+        ul { margin-left: 20px; }
+        li { margin: 8px 0; }
+        .nav-buttons { display: flex; justify-content: space-between; gap: 10px; margin-top: 40px; padding-top: 20px; border-top: 1px solid #e1e4e8; }
+        .nav-button { flex: 1; padding: 12px 20px; background: #667eea; color: white; text-decoration: none; border-radius: 6px; text-align: center; font-weight: 600; }
+        .nav-button.secondary { background: #6c757d; }
+    </style>
+</head>
+<body>
+    <div class="navbar"><div class="navbar-content"><a href="../index.html">📘 SQL for Engineers</a><nav><a href="../index.html">Home</a> | <a href="../index.html#modules">Modules</a> | <a href="../index.html#roots">Practice Packs</a></nav></div></div>
+    <div class="breadcrumb"><a href="../index.html">Home</a> / <a href="../index.html#modules">Modules</a> / <a href="module-04.html">Module 04 - Building Structures</a> / <strong>Lesson 01</strong></div>
+    <div class="container"><div class="content">
+        <div class="module-header"><h1>🏗️ Module 04 · Lesson 01: Building Structures (DDL)</h1><p>Use CREATE, ALTER, DROP, constraints, and indexes to shape schema design</p><span class="badge">Intermediate</span></div>
+
+        <div class="section"><h2 class="section-title">📖 Lesson Overview</h2><p>This lesson focuses on table lifecycle operations and schema-level data quality controls.</p></div>
+
+        <div class="section"><h2 class="section-title">🔑 Key Concepts</h2><ul>
+            <li><strong>CREATE TABLE</strong> to define new entities and relationships.</li>
+            <li><strong>ALTER TABLE</strong> to evolve existing schemas safely.</li>
+            <li><strong>DROP / TRUNCATE</strong> for object and data cleanup.</li>
+            <li><strong>Constraints + Indexes</strong> for correctness and performance.</li>
+        </ul></div>
+
+        <div class="section"><h2 class="section-title">💻 SQL Examples</h2>
+            <h3>CREATE TABLE</h3>
+            <pre><code class="language-sql">CREATE TABLE maintenance_logs (
+    log_id        SERIAL PRIMARY KEY,
+    machine_id    INT NOT NULL REFERENCES machines(machine_id),
+    technician    VARCHAR(100) NOT NULL,
+    log_date      TIMESTAMP DEFAULT NOW(),
+    work_done     TEXT,
+    hours_spent   DECIMAL(5,2),
+    cost          DECIMAL(10,2)
+);</code></pre>
+
+            <h3>ALTER TABLE</h3>
+            <pre><code class="language-sql">-- Add a column
+ALTER TABLE machines ADD COLUMN asset_tag VARCHAR(50);
+
+-- Drop a column
+ALTER TABLE machines DROP COLUMN asset_tag;
+
+-- Rename a column
+ALTER TABLE machines RENAME COLUMN status TO operational_status;
+
+-- Change data type
+ALTER TABLE machines ALTER COLUMN location TYPE VARCHAR(200);</code></pre>
+
+            <h3>DROP &amp; TRUNCATE</h3>
+            <pre><code class="language-sql">-- Remove the table entirely
+DROP TABLE maintenance_logs;
+
+-- Remove all rows but keep the table structure
+TRUNCATE TABLE downtime_logs;</code></pre>
+
+            <h3>Constraints</h3>
+            <pre><code class="language-sql">CREATE TABLE quality_checks (
+    check_id     SERIAL PRIMARY KEY,
+    order_id     INT NOT NULL,
+    defects      INT DEFAULT 0 CHECK (defects >= 0),
+    pass_fail    BOOLEAN NOT NULL,
+    checked_at   TIMESTAMP DEFAULT NOW(),
+    UNIQUE (order_id)
+);</code></pre>
+
+            <h3>Indexes</h3>
+            <pre><code class="language-sql">-- Speed up lookups by machine_id
+CREATE INDEX idx_downtime_machine ON downtime_logs(machine_id);
+
+-- Composite index
+CREATE INDEX idx_prod_machine_time ON production_orders(machine_id, start_time);
+
+-- Unique index
+CREATE UNIQUE INDEX idx_unique_asset ON machines(asset_tag);</code></pre>
+        </div>
+
+        <div class="section"><h2 class="section-title">🛡️ Notes / Best Practices</h2><ul>
+            <li>Prefer additive migrations first, then destructive changes after validation.</li>
+            <li>Name indexes and constraints clearly to simplify maintenance.</li>
+        </ul></div>
+
+        <div class="nav-buttons">
+            <a href="module-04.html" class="nav-button secondary">← Back to Module 04</a>
+            <a href="../index.html" class="nav-button secondary">Back to Home</a>
+            <a href="module-05.html" class="nav-button">Next Module →</a>
+        </div>
+    </div></div>
+    <script>hljs.highlightAll();</script>
+</body>
+</html>
