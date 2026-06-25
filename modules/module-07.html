@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 07 - Performance & Query Plans | SQL for Engineers</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            background: #f5f5f5;
+        }
+        
+        .navbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .navbar-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .navbar a:hover {
+            opacity: 0.8;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            min-height: calc(100vh - 60px);
+        }
+        
+        .breadcrumb {
+            background: #f6f8fa;
+            padding: 15px 20px;
+            border-bottom: 1px solid #e1e4e8;
+            font-size: 0.9em;
+        }
+        
+        .breadcrumb a {
+            color: #667eea;
+            text-decoration: none;
+        }
+        
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+        
+        .content {
+            padding: 40px 30px;
+        }
+        
+        .module-header {
+            color: #667eea;
+            margin-bottom: 30px;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 15px;
+        }
+        
+        .module-header h1 {
+            font-size: 2em;
+            margin-bottom: 5px;
+        }
+        
+        .module-header p {
+            color: #586069;
+            font-size: 1.1em;
+        }
+        
+        .section {
+            margin-bottom: 40px;
+        }
+        
+        .section-title {
+            font-size: 1.5em;
+            color: #24292e;
+            margin-bottom: 15px;
+            border-left: 4px solid #667eea;
+            padding-left: 15px;
+        }
+        
+        .exercise-box {
+            background: #f6f8fa;
+            border: 1px solid #e1e4e8;
+            border-radius: 6px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .exercise-number {
+            font-weight: 600;
+            color: #667eea;
+            font-size: 1.1em;
+            margin-bottom: 10px;
+        }
+        
+        .code-block {
+            background: #282c34;
+            color: #abb2bf;
+            padding: 15px;
+            border-radius: 6px;
+            overflow-x: auto;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            line-height: 1.5;
+        }
+        
+        .solution-toggle {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 10px;
+            transition: background 0.3s ease;
+        }
+        
+        .solution-toggle:hover {
+            background: #218838;
+        }
+        
+        .solution-content {
+            display: none;
+            background: #f6f8fa;
+            border: 1px solid #e1e4e8;
+            border-radius: 6px;
+            padding: 20px;
+            margin-top: 15px;
+        }
+        
+        .solution-content.show {
+            display: block;
+        }
+        
+        .solution-label {
+            font-weight: 600;
+            color: #28a745;
+            margin-bottom: 10px;
+        }
+        
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #e1e4e8;
+        }
+        
+        .nav-button {
+            flex: 1;
+            padding: 12px 20px;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            text-align: center;
+            font-weight: 600;
+            transition: background 0.3s ease;
+        }
+        
+        .nav-button:hover {
+            background: #764ba2;
+        }
+        
+        .nav-button.secondary {
+            background: #6c757d;
+        }
+        
+        .nav-button.secondary:hover {
+            background: #5a6268;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.85em;
+            font-weight: 600;
+            margin-bottom: 10px;
+            background: #dc3545;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="navbar-content">
+            <a href="../index.html">📚 SQL for Engineers</a>
+            <nav>
+                <a href="../index.html">Home</a> | 
+                <a href="../index.html#modules">Modules</a> | 
+                <a href="../index.html#roots">Practice Packs</a>
+            </nav>
+        </div>
+    </div>
+    
+    <div class="breadcrumb">
+        <a href="../index.html">Home</a> / 
+        <a href="../index.html#modules">Modules</a> / 
+        <strong>Module 07 - Performance & Query Plans</strong>
+    </div>
+    
+    <div class="container">
+        <div class="content">
+            <div class="module-header">
+                <h1>📚 Module 07 – Performance & Query Plans</h1>
+                <p>EXPLAIN, index strategies, query optimization, and bottleneck detection</p>
+                <span class="badge">Advanced</span>
+            </div>
+            
+            <div class="section">
+                <h2 class="section-title">📖 Lesson Overview</h2>
+                <p>In this module, you'll learn:</p>
+                <ul style="margin-left: 20px; line-height: 1.8;">
+                    <li><strong>EXPLAIN</strong> – Understand query execution plans</li>
+                    <li><strong>EXPLAIN ANALYZE</strong> – Actual vs. estimated costs</li>
+                    <li><strong>Index Strategies</strong> – When and how to index effectively</li>
+                    <li><strong>Query Optimization</strong> – Rewrite slow queries</li>
+                    <li><strong>Bottleneck Detection</strong> – Identify performance issues</li>
+                    <li><strong>Statistics & VACUUM</strong> – Maintain query planner accuracy</li>
+                </ul>
+            </div>
+            
+            <!-- Exercise 1 -->
+            <div class="section">
+                <h2 class="section-title">✏️ Exercise 1: EXPLAIN, Index Strategy, and Query Optimization</h2>
+                <div class="exercise-box">
+                    <div class="exercise-number">Exercise 1 – Setup & Questions</div>
+                    
+                    <p><strong>Setup:</strong> Run the SQL below first to create and populate tables</p>
+                    
+                    <div class="code-block">-- ============================================================
+-- Module 07 – Performance & Query Plans
+-- Exercise 1: EXPLAIN, Index Strategy, and Query Optimization
+-- ============================================================
+-- SETUP: Run this section first to create and populate tables
+-- ============================================================
+
+DROP TABLE IF EXISTS production_logs CASCADE;
+DROP TABLE IF EXISTS machines CASCADE;
+
+CREATE TABLE machines (
+    machine_id SERIAL PRIMARY KEY,
+    machine_name VARCHAR(100) NOT NULL,
+    factory_id INT NOT NULL,
+    operational_status VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE production_logs (
+    log_id SERIAL PRIMARY KEY,
+    machine_id INT NOT NULL REFERENCES machines (machine_id),
+    product_code VARCHAR(50) NOT NULL,
+    quantity INT NOT NULL,
+    duration_seconds INT NOT NULL,
+    log_timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+INSERT INTO machines (machine_name, factory_id, operational_status) VALUES
+    ('Mill-A1', 1, 'active'),
+    ('Laser-B2', 1, 'active'),
+    ('Robot-C1', 2, 'active'),
+    ('Robot-C2', 2, 'maintenance');
+
+INSERT INTO production_logs (machine_id, product_code, quantity, duration_seconds, log_timestamp)
+SELECT
+    (ROW_NUMBER() % 4) + 1,
+    'PROD-' || LPAD(CAST(ROW_NUMBER() % 100 AS VARCHAR), 3, '0'),
+    100 + RANDOM() * 500,
+    300 + RANDOM() * 1000,
+    CURRENT_TIMESTAMP - INTERVAL '1 day' * (ROW_NUMBER() / 100)
+FROM generate_series(1, 10000);</div>
+                    
+                    <p style="margin-top: 20px;"><strong>Questions:</strong></p>
+                    
+                    <div style="margin-top: 15px;">
+                        <p><strong>Q1: Use EXPLAIN to show the execution plan for a query that finds all production logs for machine_id = 1. What access method is used?</strong></p>
+                        <p style="color: #586069; margin: 10px 0;">Write your EXPLAIN query and describe the plan:</p>
+                    </div>
+                    
+                    <div style="margin-top: 15px;">
+                        <p><strong>Q2: Use EXPLAIN ANALYZE on a JOIN query between machines and production_logs filtered by factory_id = 1. Compare estimated vs. actual rows.</strong></p>
+                        <p style="color: #586069; margin: 10px 0;">Write your EXPLAIN ANALYZE query:</p>
+                    </div>
+                    
+                    <div style="margin-top: 15px;">
+                        <p><strong>Q3: Create an index that would speed up the query: SELECT * FROM production_logs WHERE machine_id = ? AND log_timestamp > ?. Why composite index?</strong></p>
+                        <p style="color: #586069; margin: 10px 0;">Write your CREATE INDEX statement and explanation:</p>
+                    </div>
+                    
+                    <div style="margin-top: 20px; padding: 15px; background: #fff3cd; border-radius: 6px;">
+                        <strong>Challenge:</strong>
+                        <p style="margin-top: 10px;"><strong>C1: Rewrite a slow query to avoid a full table scan. Provide before/after EXPLAIN plans.</strong></p>
+                    </div>
+                    
+                    <button class="solution-toggle" onclick="toggleSolution(this)">👁️ Show Solution</button>
+                    
+                    <div class="solution-content">
+                        <div class="solution-label">📋 Solution 1</div>
+                        
+                        <p><strong>Q1 Solution:</strong></p>
+                        <div class="code-block">EXPLAIN
+SELECT * FROM production_logs
+WHERE machine_id = 1;
+
+-- Expected output: Seq Scan (if no index) or Index Scan (if indexed)
+-- Plan structure:
+--   -> Seq Scan on production_logs
+--        Filter: (machine_id = 1)
+-- Explanation: Without an index, PostgreSQL performs a full table scan.
+-- Access Method: Sequential scan (Seq Scan)</div>
+                        
+                        <p style="margin-top: 15px;"><strong>Q2 Solution:</strong></p>
+                        <div class="code-block">EXPLAIN ANALYZE
+SELECT m.machine_name, COUNT(pl.log_id) AS log_count
+FROM machines m
+LEFT JOIN production_logs pl ON m.machine_id = pl.machine_id
+WHERE m.factory_id = 1
+GROUP BY m.machine_name;
+
+-- Output shows:
+-- Plan rows vs. actual rows
+-- Loop counts and actual timing
+-- Planning Time and Execution Time
+-- Helps identify where the planner made mistakes.</div>
+                        
+                        <p style="margin-top: 15px;"><strong>Q3 Solution:</strong></p>
+                        <div class="code-block">CREATE INDEX idx_production_logs_machine_timestamp
+ON production_logs (machine_id, log_timestamp DESC);
+
+-- Reason for composite index:
+-- This index supports both the filter on machine_id and the range condition on log_timestamp.
+-- PostgreSQL can use the index for efficient row retrieval and avoid a full table scan.
+-- DESC on log_timestamp helps if you typically order by most recent first.</div>
+                        
+                        <p style="margin-top: 15px;"><strong>C1 Solution:</strong></p>
+                        <div class="code-block">-- BEFORE: Slow query with full table scan
+EXPLAIN ANALYZE
+SELECT *
+FROM production_logs
+WHERE log_timestamp > CURRENT_TIMESTAMP - INTERVAL '7 days'
+AND quantity > 250;
+
+-- Expected: Seq Scan on production_logs (millions of rows scanned)
+
+-- AFTER: Optimized with index
+CREATE INDEX idx_production_logs_timestamp_qty
+ON production_logs (log_timestamp DESC, quantity);
+
+EXPLAIN ANALYZE
+SELECT *
+FROM production_logs
+WHERE log_timestamp > CURRENT_TIMESTAMP - INTERVAL '7 days'
+AND quantity > 250;
+
+-- Expected: Index Scan using idx_production_logs_timestamp_qty
+-- Far fewer rows scanned and returned immediately.</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Navigation -->
+            <div class="nav-buttons">
+                <a href="module-06.html" class="nav-button secondary">← Previous Module</a>
+                <a href="../index.html" class="nav-button secondary">Back to Home</a>
+                <a href="module-08.html" class="nav-button">Next Module →</a>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function toggleSolution(button) {
+            const nextDiv = button.nextElementSibling;
+            if (nextDiv && nextDiv.classList.contains('solution-content')) {
+                nextDiv.classList.toggle('show');
+                button.textContent = nextDiv.classList.contains('show') ? '👁️ Hide Solution' : '👁️ Show Solution';
+            }
+        }
+        
+        hljs.highlightAll();
+    </script>
+</body>
+</html>

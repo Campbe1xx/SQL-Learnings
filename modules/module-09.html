@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 09 - Capstone Project | SQL for Engineers</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            background: #f5f5f5;
+        }
+        
+        .navbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .navbar-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .navbar a:hover {
+            opacity: 0.8;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            min-height: calc(100vh - 60px);
+        }
+        
+        .breadcrumb {
+            background: #f6f8fa;
+            padding: 15px 20px;
+            border-bottom: 1px solid #e1e4e8;
+            font-size: 0.9em;
+        }
+        
+        .breadcrumb a {
+            color: #667eea;
+            text-decoration: none;
+        }
+        
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+        
+        .content {
+            padding: 40px 30px;
+        }
+        
+        .module-header {
+            color: #667eea;
+            margin-bottom: 30px;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 15px;
+        }
+        
+        .module-header h1 {
+            font-size: 2em;
+            margin-bottom: 5px;
+        }
+        
+        .module-header p {
+            color: #586069;
+            font-size: 1.1em;
+        }
+        
+        .section {
+            margin-bottom: 40px;
+        }
+        
+        .section-title {
+            font-size: 1.5em;
+            color: #24292e;
+            margin-bottom: 15px;
+            border-left: 4px solid #667eea;
+            padding-left: 15px;
+        }
+        
+        .exercise-box {
+            background: #f6f8fa;
+            border: 1px solid #e1e4e8;
+            border-radius: 6px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .exercise-number {
+            font-weight: 600;
+            color: #667eea;
+            font-size: 1.1em;
+            margin-bottom: 10px;
+        }
+        
+        .code-block {
+            background: #282c34;
+            color: #abb2bf;
+            padding: 15px;
+            border-radius: 6px;
+            overflow-x: auto;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            line-height: 1.5;
+        }
+        
+        .solution-toggle {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 10px;
+            transition: background 0.3s ease;
+        }
+        
+        .solution-toggle:hover {
+            background: #218838;
+        }
+        
+        .solution-content {
+            display: none;
+            background: #f6f8fa;
+            border: 1px solid #e1e4e8;
+            border-radius: 6px;
+            padding: 20px;
+            margin-top: 15px;
+        }
+        
+        .solution-content.show {
+            display: block;
+        }
+        
+        .solution-label {
+            font-weight: 600;
+            color: #28a745;
+            margin-bottom: 10px;
+        }
+        
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #e1e4e8;
+        }
+        
+        .nav-button {
+            flex: 1;
+            padding: 12px 20px;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            text-align: center;
+            font-weight: 600;
+            transition: background 0.3s ease;
+        }
+        
+        .nav-button:hover {
+            background: #764ba2;
+        }
+        
+        .nav-button.secondary {
+            background: #6c757d;
+        }
+        
+        .nav-button.secondary:hover {
+            background: #5a6268;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.85em;
+            font-weight: 600;
+            margin-bottom: 10px;
+            background: #ffc107;
+            color: #333;
+        }
+        
+        .completion-banner {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .completion-banner h2 {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="navbar-content">
+            <a href="../index.html">📚 SQL for Engineers</a>
+            <nav>
+                <a href="../index.html">Home</a> | 
+                <a href="../index.html#modules">Modules</a> | 
+                <a href="../index.html#roots">Practice Packs</a>
+            </nav>
+        </div>
+    </div>
+    
+    <div class="breadcrumb">
+        <a href="../index.html">Home</a> / 
+        <a href="../index.html#modules">Modules</a> / 
+        <strong>Module 09 - Capstone Project</strong>
+    </div>
+    
+    <div class="container">
+        <div class="content">
+            <div class="completion-banner">
+                <h2>🎓 Module 09 – Capstone Project</h2>
+                <p>Integrate all concepts from Modules 01-08 into a real-world scenario</p>
+            </div>
+            
+            <div class="module-header">
+                <h1>🏭 Manufacturing Operations Database</h1>
+                <p>Design and build a complete production tracking system</p>
+                <span class="badge">Capstone</span>
+            </div>
+            
+            <div class="section">
+                <h2 class="section-title">📖 Project Overview</h2>
+                <p>You are building a production tracking database for a manufacturing facility. This capstone integrates:</p>
+                <ul style="margin-left: 20px; line-height: 1.8;">
+                    <li><strong>Schema Design</strong> – CREATE tables with proper constraints</li>
+                    <li><strong>Data Integrity</strong> – FOREIGN KEYs, CHECK constraints</li>
+                    <li><strong>DML Operations</strong> – INSERT, UPDATE, DELETE with transactions</li>
+                    <li><strong>Advanced Queries</strong> – JOINs, CTEs, window functions</li>
+                    <li><strong>Automation</strong> – Triggers and procedures</li>
+                    <li><strong>Security</strong> – Roles and RLS policies</li>
+                    <li><strong>Performance</strong> – Indexes and query optimization</li>
+                </ul>
+            </div>
+            
+            <!-- Capstone Exercise -->
+            <div class="section">
+                <h2 class="section-title">✏️ Capstone Project: Manufacturing Operations System</h2>
+                <div class="exercise-box">
+                    <div class="exercise-number">Capstone – Requirements & Deliverables</div>
+                    
+                    <p><strong>Scenario:</strong> A factory produces components on multiple machines. You must build:</p>
+                    
+                    <div style="margin-top: 15px;">
+                        <p><strong>Part 1: Schema Design</strong></p>
+                        <p style="color: #586069; margin: 10px 0;">Create tables for:</p>
+                        <ul style="margin-left: 20px;">
+                            <li>Machines (machine_id, name, capacity_units_per_hour, status)</li>
+                            <li>Work Orders (order_id, machine_id, product_code, target_quantity, deadline, status)</li>
+                            <li>Production Runs (run_id, order_id, start_time, end_time, actual_quantity, quality_check_pass)</li>
+                            <li>Downtime Events (event_id, machine_id, start_time, end_time, reason_code)</li>
+                            <li>Quality Audit (audit_id, run_id, auditor_name, pass_fail, notes)</li>
+                        </ul>
+                    </div>
+                    
+                    <div style="margin-top: 15px;">
+                        <p><strong>Part 2: Queries</strong></p>
+                        <ul style="margin-left: 20px;">
+                            <li>Calculate machine efficiency % (actual vs. rated capacity)</li>
+                            <li>Find overdue work orders</li>
+                            <li>Rank machines by production volume in last 7 days</li>
+                            <li>Identify quality trends per machine</li>
+                        </ul>
+                    </div>
+                    
+                    <div style="margin-top: 15px;">
+                        <p><strong>Part 3: Automation</strong></p>
+                        <ul style="margin-left: 20px;">
+                            <li>Create a trigger to mark orders as 'complete' when all runs pass QA</li>
+                            <li>Create a procedure to log downtime and update machine status</li>
+                        </ul>
+                    </div>
+                    
+                    <div style="margin-top: 15px;">
+                        <p><strong>Part 4: Security & Performance</strong></p>
+                        <ul style="margin-left: 20px;">
+                            <li>Create roles: auditor_role (read-only on Quality Audit), operator_role (INSERT production runs)</li>
+                            <li>Add index on frequently searched columns</li>
+                            <li>Optimize the efficiency calculation query</li>
+                        </ul>
+                    </div>
+                    
+                    <button class="solution-toggle" onclick="toggleSolution(this)">👁️ Show Full Solution</button>
+                    
+                    <div class="solution-content">
+                        <div class="solution-label">📋 Complete Capstone Solution</div>
+                        
+                        <p><strong>Part 1: Schema Design</strong></p>
+                        <div class="code-block">-- Clean start
+DROP TABLE IF EXISTS quality_audit CASCADE;
+DROP TABLE IF EXISTS downtime_events CASCADE;
+DROP TABLE IF EXISTS production_runs CASCADE;
+DROP TABLE IF EXISTS work_orders CASCADE;
+DROP TABLE IF EXISTS machines CASCADE;
+
+CREATE TABLE machines (
+    machine_id SERIAL PRIMARY KEY,
+    machine_name VARCHAR(100) NOT NULL,
+    capacity_units_per_hour INT NOT NULL CHECK (capacity_units_per_hour > 0),
+    status VARCHAR(20) NOT NULL DEFAULT 'operational',
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE work_orders (
+    order_id SERIAL PRIMARY KEY,
+    machine_id INT NOT NULL REFERENCES machines (machine_id),
+    product_code VARCHAR(50) NOT NULL,
+    target_quantity INT NOT NULL CHECK (target_quantity > 0),
+    deadline DATE NOT NULL,
+    status VARCHAR(20) NOT NULL DEFAULT 'pending',
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE production_runs (
+    run_id SERIAL PRIMARY KEY,
+    order_id INT NOT NULL REFERENCES work_orders (order_id),
+    start_time TIMESTAMP NOT NULL,
+    end_time TIMESTAMP,
+    actual_quantity INT NOT NULL CHECK (actual_quantity >= 0),
+    quality_check_pass BOOLEAN NOT NULL DEFAULT TRUE
+);
+
+CREATE TABLE downtime_events (
+    event_id SERIAL PRIMARY KEY,
+    machine_id INT NOT NULL REFERENCES machines (machine_id),
+    start_time TIMESTAMP NOT NULL,
+    end_time TIMESTAMP,
+    reason_code VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE quality_audit (
+    audit_id SERIAL PRIMARY KEY,
+    run_id INT NOT NULL REFERENCES production_runs (run_id),
+    auditor_name VARCHAR(100) NOT NULL,
+    pass_fail VARCHAR(10) NOT NULL,
+    notes TEXT,
+    audit_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Indexes
+CREATE INDEX idx_work_orders_machine_deadline ON work_orders (machine_id, deadline);
+CREATE INDEX idx_production_runs_order ON production_runs (order_id);
+CREATE INDEX idx_downtime_machine_start ON downtime_events (machine_id, start_time);
+CREATE INDEX idx_quality_run ON quality_audit (run_id);</div>
+                        
+                        <p style="margin-top: 15px;"><strong>Part 2: Key Queries</strong></p>
+                        <div class="code-block">-- Machine Efficiency %
+WITH machine_stats AS (
+    SELECT
+        m.machine_id,
+        m.machine_name,
+        m.capacity_units_per_hour,
+        SUM(pr.actual_quantity) AS total_produced,
+        EXTRACT(EPOCH FROM (MAX(pr.end_time) - MIN(pr.start_time))) / 3600 AS total_hours
+    FROM machines m
+    LEFT JOIN work_orders wo ON m.machine_id = wo.machine_id
+    LEFT JOIN production_runs pr ON wo.order_id = pr.order_id
+    WHERE pr.start_time > CURRENT_TIMESTAMP - INTERVAL '7 days'
+    GROUP BY m.machine_id, m.machine_name, m.capacity_units_per_hour
+)
+SELECT
+    machine_name,
+    ROUND(100.0 * total_produced / NULLIF(capacity_units_per_hour * total_hours, 0), 2) AS efficiency_percent
+FROM machine_stats
+ORDER BY efficiency_percent DESC;
+
+-- Overdue Work Orders
+SELECT order_id, product_code, deadline, status
+FROM work_orders
+WHERE deadline < CURRENT_DATE AND status NOT IN ('complete', 'cancelled')
+ORDER BY deadline;
+
+-- Machine Production Ranking (Last 7 Days)
+SELECT
+    m.machine_name,
+    SUM(pr.actual_quantity) AS total_produced,
+    ROW_NUMBER() OVER (ORDER BY SUM(pr.actual_quantity) DESC) AS rank
+FROM machines m
+JOIN work_orders wo ON m.machine_id = wo.machine_id
+JOIN production_runs pr ON wo.order_id = pr.order_id
+WHERE pr.start_time > CURRENT_TIMESTAMP - INTERVAL '7 days'
+GROUP BY m.machine_id, m.machine_name
+ORDER BY rank;</div>
+                        
+                        <p style="margin-top: 15px;"><strong>Part 3: Automation</strong></p>
+                        <div class="code-block">-- Trigger: Mark orders complete when all runs pass QA
+CREATE OR REPLACE FUNCTION check_order_completion()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    v_order_id INT;
+    v_failed_count INT;
+BEGIN
+    v_order_id := NEW.run_id;
+    
+    -- Count failed quality checks for this order
+    SELECT COUNT(*)
+    INTO v_failed_count
+    FROM production_runs pr
+    WHERE pr.order_id = (SELECT order_id FROM production_runs WHERE run_id = NEW.run_id)
+    AND pr.quality_check_pass = FALSE;
+    
+    IF v_failed_count = 0 THEN
+        UPDATE work_orders
+        SET status = 'complete'
+        WHERE order_id = (SELECT order_id FROM production_runs WHERE run_id = NEW.run_id);
+    END IF;
+    
+    RETURN NEW;
+END;
+$$;
+
+CREATE TRIGGER trg_order_completion
+AFTER INSERT ON quality_audit
+FOR EACH ROW
+EXECUTE FUNCTION check_order_completion();
+
+-- Procedure: Log downtime and update machine status
+CREATE OR REPLACE PROCEDURE log_downtime(
+    p_machine_id INT,
+    p_reason_code VARCHAR
+)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    -- Insert downtime event
+    INSERT INTO downtime_events (machine_id, start_time, reason_code)
+    VALUES (p_machine_id, CURRENT_TIMESTAMP, p_reason_code);
+    
+    -- Update machine status
+    UPDATE machines
+    SET status = 'downtime'
+    WHERE machine_id = p_machine_id;
+    
+    COMMIT;
+END;
+$$;</div>
+                        
+                        <p style="margin-top: 15px;"><strong>Part 4: Security & Roles</strong></p>
+                        <div class="code-block">-- Create roles
+CREATE ROLE auditor_role NOLOGIN;
+CREATE ROLE operator_role NOLOGIN;
+
+-- Auditor: read-only access to quality_audit
+GRANT USAGE ON SCHEMA public TO auditor_role;
+GRANT SELECT ON quality_audit TO auditor_role;
+GRANT SELECT ON production_runs TO auditor_role;  -- For context
+
+-- Operator: INSERT production runs, read work orders
+GRANT USAGE ON SCHEMA public TO operator_role;
+GRANT INSERT, SELECT ON production_runs TO operator_role;
+GRANT SELECT ON work_orders TO operator_role;
+GRANT SELECT ON machines TO operator_role;</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section" style="background: #e8f5e9; padding: 20px; border-radius: 8px; margin-top: 30px;">
+                <h2 class="section-title" style="border-left-color: #28a745;">🎉 Congratulations!</h2>
+                <p>You have completed all 9 modules of <strong>SQL for Engineers</strong>. You now have foundational and advanced skills in:</p>
+                <ul style="margin-left: 20px; line-height: 1.8; margin-top: 15px;">
+                    <li>✅ SQL fundamentals and data retrieval</li>
+                    <li>✅ Data modification and transactions</li>
+                    <li>✅ Schema design with constraints and indexes</li>
+                    <li>✅ Advanced SQL: views, procedures, functions, triggers, CTEs</li>
+                    <li>✅ Performance optimization and query planning</li>
+                    <li>✅ Security, access control, and data protection</li>
+                </ul>
+                <p style="margin-top: 20px; font-weight: 600;">Continue practicing with real datasets and explore database optimization in your professional projects!</p>
+            </div>
+            
+            <!-- Navigation -->
+            <div class="nav-buttons">
+                <a href="module-08.html" class="nav-button secondary">← Previous Module</a>
+                <a href="../index.html" class="nav-button secondary">Back to Home</a>
+                <a href="../index.html" class="nav-button">🏠 Return to Dashboard</a>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function toggleSolution(button) {
+            const nextDiv = button.nextElementSibling;
+            if (nextDiv && nextDiv.classList.contains('solution-content')) {
+                nextDiv.classList.toggle('show');
+                button.textContent = nextDiv.classList.contains('show') ? '👁️ Hide Solution' : '👁️ Show Solution';
+            }
+        }
+        
+        hljs.highlightAll();
+    </script>
+</body>
+</html>

@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 08 - Security & Access Control | SQL for Engineers</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            background: #f5f5f5;
+        }
+        
+        .navbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .navbar-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .navbar a:hover {
+            opacity: 0.8;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            min-height: calc(100vh - 60px);
+        }
+        
+        .breadcrumb {
+            background: #f6f8fa;
+            padding: 15px 20px;
+            border-bottom: 1px solid #e1e4e8;
+            font-size: 0.9em;
+        }
+        
+        .breadcrumb a {
+            color: #667eea;
+            text-decoration: none;
+        }
+        
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+        
+        .content {
+            padding: 40px 30px;
+        }
+        
+        .module-header {
+            color: #667eea;
+            margin-bottom: 30px;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 15px;
+        }
+        
+        .module-header h1 {
+            font-size: 2em;
+            margin-bottom: 5px;
+        }
+        
+        .module-header p {
+            color: #586069;
+            font-size: 1.1em;
+        }
+        
+        .section {
+            margin-bottom: 40px;
+        }
+        
+        .section-title {
+            font-size: 1.5em;
+            color: #24292e;
+            margin-bottom: 15px;
+            border-left: 4px solid #667eea;
+            padding-left: 15px;
+        }
+        
+        .exercise-box {
+            background: #f6f8fa;
+            border: 1px solid #e1e4e8;
+            border-radius: 6px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .exercise-number {
+            font-weight: 600;
+            color: #667eea;
+            font-size: 1.1em;
+            margin-bottom: 10px;
+        }
+        
+        .code-block {
+            background: #282c34;
+            color: #abb2bf;
+            padding: 15px;
+            border-radius: 6px;
+            overflow-x: auto;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            line-height: 1.5;
+        }
+        
+        .solution-toggle {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 10px;
+            transition: background 0.3s ease;
+        }
+        
+        .solution-toggle:hover {
+            background: #218838;
+        }
+        
+        .solution-content {
+            display: none;
+            background: #f6f8fa;
+            border: 1px solid #e1e4e8;
+            border-radius: 6px;
+            padding: 20px;
+            margin-top: 15px;
+        }
+        
+        .solution-content.show {
+            display: block;
+        }
+        
+        .solution-label {
+            font-weight: 600;
+            color: #28a745;
+            margin-bottom: 10px;
+        }
+        
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #e1e4e8;
+        }
+        
+        .nav-button {
+            flex: 1;
+            padding: 12px 20px;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            text-align: center;
+            font-weight: 600;
+            transition: background 0.3s ease;
+        }
+        
+        .nav-button:hover {
+            background: #764ba2;
+        }
+        
+        .nav-button.secondary {
+            background: #6c757d;
+        }
+        
+        .nav-button.secondary:hover {
+            background: #5a6268;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.85em;
+            font-weight: 600;
+            margin-bottom: 10px;
+            background: #dc3545;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="navbar-content">
+            <a href="../index.html">📚 SQL for Engineers</a>
+            <nav>
+                <a href="../index.html">Home</a> | 
+                <a href="../index.html#modules">Modules</a> | 
+                <a href="../index.html#roots">Practice Packs</a>
+            </nav>
+        </div>
+    </div>
+    
+    <div class="breadcrumb">
+        <a href="../index.html">Home</a> / 
+        <a href="../index.html#modules">Modules</a> / 
+        <strong>Module 08 - Security & Access Control</strong>
+    </div>
+    
+    <div class="container">
+        <div class="content">
+            <div class="module-header">
+                <h1>📚 Module 08 – Security & Access Control</h1>
+                <p>Users, roles, privileges, Row-Level Security (RLS), and SQL injection prevention</p>
+                <span class="badge">Advanced</span>
+            </div>
+            
+            <div class="section">
+                <h2 class="section-title">📖 Lesson Overview</h2>
+                <p>In this module, you'll learn:</p>
+                <ul style="margin-left: 20px; line-height: 1.8;">
+                    <li><strong>Users & Roles</strong> – Create and manage database accounts</li>
+                    <li><strong>Privileges</strong> – GRANT/REVOKE permissions on objects</li>
+                    <li><strong>Row-Level Security (RLS)</strong> – Restrict rows per user/role</li>
+                    <li><strong>SQL Injection Prevention</strong> – Parameterized queries and prepared statements</li>
+                    <li><strong>Audit & Logging</strong> – Track changes and access</li>
+                    <li><strong>Password & Connection Security</strong> – Best practices</li>
+                </ul>
+            </div>
+            
+            <!-- Exercise 1 -->
+            <div class="section">
+                <h2 class="section-title">✏️ Exercise 1: Roles, Privileges, RLS, and SQL Injection Prevention</h2>
+                <div class="exercise-box">
+                    <div class="exercise-number">Exercise 1 – Setup & Questions</div>
+                    
+                    <p><strong>Setup:</strong> Run the SQL below first to create and populate tables</p>
+                    
+                    <div class="code-block">-- ============================================================
+-- Module 08 – Security & Access Control
+-- Exercise 1: Roles, Privileges, RLS, SQL Injection Prevention
+-- ============================================================
+-- SETUP: Run this section first to create and populate tables
+-- ============================================================
+
+DROP TABLE IF EXISTS employee_data CASCADE;
+DROP ROLE IF EXISTS read_only_user CASCADE;
+DROP ROLE IF EXISTS analyst_role CASCADE;
+
+CREATE TABLE employee_data (
+    emp_id SERIAL PRIMARY KEY,
+    emp_name VARCHAR(100) NOT NULL,
+    department VARCHAR(50) NOT NULL,
+    salary NUMERIC(10,2) NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+INSERT INTO employee_data (emp_name, department, salary) VALUES
+    ('Alice Chen', 'Engineering', 95000),
+    ('Bob Smith', 'Engineering', 92000),
+    ('Carol Davis', 'Sales', 75000),
+    ('David Lee', 'HR', 70000);</div>
+                    
+                    <p style="margin-top: 20px;"><strong>Questions:</strong></p>
+                    
+                    <div style="margin-top: 15px;">
+                        <p><strong>Q1: CREATE a read-only role and GRANT SELECT privilege on employee_data to that role.</strong></p>
+                        <p style="color: #586069; margin: 10px 0;">Write your GRANT statements below:</p>
+                    </div>
+                    
+                    <div style="margin-top: 15px;">
+                        <p><strong>Q2: CREATE an analyst_role and GRANT SELECT, INSERT, UPDATE privileges on employee_data. Then REVOKE UPDATE.</strong></p>
+                        <p style="color: #586069; margin: 10px 0;">Write your statements below:</p>
+                    </div>
+                    
+                    <div style="margin-top: 15px;">
+                        <p><strong>Q3: Enable Row-Level Security on employee_data and create a policy so users can only see rows where department = 'Engineering'.</strong></p>
+                        <p style="color: #586069; margin: 10px 0;">Write your RLS setup below:</p>
+                    </div>
+                    
+                    <div style="margin-top: 20px; padding: 15px; background: #fff3cd; border-radius: 6px;">
+                        <strong>Challenge:</strong>
+                        <p style="margin-top: 10px;"><strong>C1: Demonstrate SQL injection vulnerability in a dynamic query and show how to prevent it using parameterized queries.</strong></p>
+                    </div>
+                    
+                    <button class="solution-toggle" onclick="toggleSolution(this)">👁️ Show Solution</button>
+                    
+                    <div class="solution-content">
+                        <div class="solution-label">📋 Solution 1</div>
+                        
+                        <p><strong>Q1 Solution:</strong></p>
+                        <div class="code-block">-- Create read-only role
+CREATE ROLE read_only_user WITH NOLOGIN;
+
+-- Grant permissions
+GRANT USAGE ON SCHEMA public TO read_only_user;
+GRANT SELECT ON employee_data TO read_only_user;
+
+-- To assign this role to a user:
+-- GRANT read_only_user TO actual_user_name;</div>
+                        
+                        <p style="margin-top: 15px;"><strong>Q2 Solution:</strong></p>
+                        <div class="code-block">-- Create analyst role
+CREATE ROLE analyst_role WITH NOLOGIN;
+
+-- Grant permissions
+GRANT USAGE ON SCHEMA public TO analyst_role;
+GRANT SELECT, INSERT, UPDATE ON employee_data TO analyst_role;
+
+-- Revoke UPDATE
+REVOKE UPDATE ON employee_data FROM analyst_role;
+
+-- Now analyst_role has only SELECT and INSERT</div>
+                        
+                        <p style="margin-top: 15px;"><strong>Q3 Solution:</strong></p>
+                        <div class="code-block">-- Enable RLS on the table
+ALTER TABLE employee_data ENABLE ROW LEVEL SECURITY;
+
+-- Create a policy allowing only Engineering department access
+CREATE POLICY engineering_policy ON employee_data
+    USING (department = 'Engineering')
+    WITH CHECK (department = 'Engineering');
+
+-- Create a default DENY policy for other roles (optional but recommended)
+CREATE POLICY deny_all ON employee_data
+    AS PERMISSIVE
+    FOR SELECT
+    USING (FALSE);
+
+-- Assign policy to specific role
+ALTER TABLE employee_data FORCE ROW LEVEL SECURITY;</div>
+                        
+                        <p style="margin-top: 15px;"><strong>C1 Solution:</strong></p>
+                        <div class="code-block">-- VULNERABLE: SQL Injection Risk
+-- DO NOT USE THIS in production:
+-- CREATE FUNCTION get_employee_unsafe(p_dept_name VARCHAR)
+-- RETURNS TABLE(...) AS $$
+-- BEGIN
+--   RETURN QUERY EXECUTE 'SELECT * FROM employee_data WHERE department = ''' || p_dept_name || ''';
+-- END;
+-- $$ LANGUAGE plpgsql;
+--
+-- An attacker could call:
+--   SELECT * FROM get_employee_unsafe('Engineering''; DROP TABLE employee_data; --')
+--
+-- SAFE: Use parameterized queries
+CREATE OR REPLACE FUNCTION get_employee_safe(p_dept_name VARCHAR)
+RETURNS TABLE (emp_id INT, emp_name VARCHAR, department VARCHAR, salary NUMERIC, created_at TIMESTAMP)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    RETURN QUERY
+    SELECT e.emp_id, e.emp_name, e.department, e.salary, e.created_at
+    FROM employee_data e
+    WHERE e.department = p_dept_name;  -- Parameter binding prevents injection
+END;
+$$;
+
+-- Safe call:
+SELECT * FROM get_employee_safe('Engineering');</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Navigation -->
+            <div class="nav-buttons">
+                <a href="module-07.html" class="nav-button secondary">← Previous Module</a>
+                <a href="../index.html" class="nav-button secondary">Back to Home</a>
+                <a href="module-09.html" class="nav-button">Next Module →</a>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function toggleSolution(button) {
+            const nextDiv = button.nextElementSibling;
+            if (nextDiv && nextDiv.classList.contains('solution-content')) {
+                nextDiv.classList.toggle('show');
+                button.textContent = nextDiv.classList.contains('show') ? '👁️ Hide Solution' : '👁️ Show Solution';
+            }
+        }
+        
+        hljs.highlightAll();
+    </script>
+</body>
+</html>
