@@ -103,28 +103,19 @@
             padding-left: 15px;
         }
         
-        .exercise-list {
-            list-style: none;
-            margin: 20px 0;
-        }
-        
-        .exercise-list li {
+        .exercise-box {
             background: #f6f8fa;
             border: 1px solid #e1e4e8;
             border-radius: 6px;
-            padding: 15px;
-            margin-bottom: 10px;
-            cursor: pointer;
-            transition: all 0.3s ease;
+            padding: 20px;
+            margin-bottom: 20px;
         }
         
-        .exercise-list li:hover {
-            border-color: #667eea;
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
-        }
-        
-        .exercise-list li strong {
+        .exercise-number {
+            font-weight: 600;
             color: #667eea;
+            font-size: 1.1em;
+            margin-bottom: 10px;
         }
         
         .code-block {
@@ -153,6 +144,25 @@
         
         .solution-toggle:hover {
             background: #218838;
+        }
+        
+        .solution-content {
+            display: none;
+            background: #f6f8fa;
+            border: 1px solid #e1e4e8;
+            border-radius: 6px;
+            padding: 20px;
+            margin-top: 15px;
+        }
+        
+        .solution-content.show {
+            display: block;
+        }
+        
+        .solution-label {
+            font-weight: 600;
+            color: #28a745;
+            margin-bottom: 10px;
         }
         
         .nav-buttons {
@@ -197,17 +207,19 @@
             margin-bottom: 10px;
         }
         
+        .badge-beginner {
+            background: #28a745;
+            color: white;
+        }
+        
         .badge-intermediate {
             background: #ffc107;
             color: #333;
         }
         
-        .info-box {
-            background: #d1ecf1;
-            border: 1px solid #bee5eb;
-            border-radius: 6px;
-            padding: 15px;
-            margin: 20px 0;
+        .badge-advanced {
+            background: #dc3545;
+            color: white;
         }
     </style>
 </head>
@@ -233,75 +245,47 @@
         <div class="content">
             <div class="module-header">
                 <h1>📚 Module 02 – Reading Data</h1>
-                <p>Master data retrieval with SELECT, JOINs, aggregates, subqueries, and window functions</p>
-                <span class="badge badge-intermediate">Beginner → Intermediate</span>
+                <p>Query and filter data efficiently with SELECT statements</p>
+                <span class="badge badge-beginner">Beginner</span>
             </div>
-            
+
             <div class="section">
                 <h2 class="section-title">📖 Lesson Overview</h2>
-                <p>In this module, you'll learn:</p>
+                <p>Use this module page as your main entry point for lessons and exercises.</p>
                 <ul style="margin-left: 20px; line-height: 1.8;">
-                    <li><strong>SELECT, WHERE, ORDER BY, LIMIT</strong> – Basic data retrieval</li>
-                    <li><strong>Aggregates</strong> – SUM(), COUNT(), AVG(), MIN(), MAX()</li>
-                    <li><strong>GROUP BY & HAVING</strong> – Grouping and filtering aggregates</li>
-                    <li><strong>JOINs</strong> – INNER, LEFT, RIGHT, SELF joins</li>
-                    <li><strong>Subqueries & CTEs</strong> – Nested and common table expressions</li>
-                    <li><strong>Window Functions</strong> – ROW_NUMBER, RANK, LAG, LEAD, running totals</li>
+                    <li>Practice selecting columns and rows</li>
+                    <li>Apply filtering with WHERE</li>
+                    <li>Sort and limit results clearly</li>
+                    <li>Navigate to module-specific lesson pages below</li>
                 </ul>
             </div>
-            
-            <div class="info-box">
-                <strong>💡 Tip:</strong> This module has 5 exercises. Complete them in order for best learning progression.
-            </div>
-            
+
             <div class="section">
-                <h2 class="section-title">✏️ Exercises</h2>
-                <ul class="exercise-list">
-                    <li>
-                        <strong>Exercise 1:</strong> SELECT, WHERE, ORDER BY, and LIMIT
-                        <p style="margin-top: 5px; font-size: 0.9em; color: #586069;">Questions: 5 | Difficulty: Beginner</p>
-                    </li>
-                    <li>
-                        <strong>Exercise 2:</strong> Aggregates, GROUP BY, and HAVING
-                        <p style="margin-top: 5px; font-size: 0.9em; color: #586069;">Questions: 5 | Difficulty: Beginner</p>
-                    </li>
-                    <li>
-                        <strong>Exercise 3:</strong> JOIN Patterns (INNER, LEFT, RIGHT, SELF)
-                        <p style="margin-top: 5px; font-size: 0.9em; color: #586069;">Questions: 5 | Difficulty: Intermediate</p>
-                    </li>
-                    <li>
-                        <strong>Exercise 4:</strong> Subqueries and CTEs
-                        <p style="margin-top: 5px; font-size: 0.9em; color: #586069;">Questions: 5 | Difficulty: Intermediate</p>
-                    </li>
-                    <li>
-                        <strong>Exercise 5:</strong> Window Functions (ROW_NUMBER, RANK, LAG, LEAD, SUM OVER)
-                        <p style="margin-top: 5px; font-size: 0.9em; color: #586069;">Questions: 5 | Difficulty: Intermediate</p>
-                    </li>
-                </ul>
-            </div>
-            
-            <div class="section">
-                <h2 class="section-title">📝 Download All Exercises</h2>
-                <p style="margin: 15px 0;">Download complete SQL files for all Module 02 exercises:</p>
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px;">
-                    <a href="https://raw.githubusercontent.com/Campbe1xx/SQL-Learnings/main/Module_02_Reading_Data/exercises/exercise_01.sql" style="display: inline-block; padding: 10px 15px; background: #667eea; color: white; border-radius: 6px; text-decoration: none; text-align: center; font-weight: 600;">Exercise 1</a>
-                    <a href="https://raw.githubusercontent.com/Campbe1xx/SQL-Learnings/main/Module_02_Reading_Data/exercises/exercise_02.sql" style="display: inline-block; padding: 10px 15px; background: #667eea; color: white; border-radius: 6px; text-decoration: none; text-align: center; font-weight: 600;">Exercise 2</a>
-                    <a href="https://raw.githubusercontent.com/Campbe1xx/SQL-Learnings/main/Module_02_Reading_Data/exercises/exercise_03.sql" style="display: inline-block; padding: 10px 15px; background: #667eea; color: white; border-radius: 6px; text-decoration: none; text-align: center; font-weight: 600;">Exercise 3</a>
-                    <a href="https://raw.githubusercontent.com/Campbe1xx/SQL-Learnings/main/Module_02_Reading_Data/exercises/exercise_04.sql" style="display: inline-block; padding: 10px 15px; background: #667eea; color: white; border-radius: 6px; text-decoration: none; text-align: center; font-weight: 600;">Exercise 4</a>
-                    <a href="https://raw.githubusercontent.com/Campbe1xx/SQL-Learnings/main/Module_02_Reading_Data/exercises/exercise_05.sql" style="display: inline-block; padding: 10px 15px; background: #667eea; color: white; border-radius: 6px; text-decoration: none; text-align: center; font-weight: 600;">Exercise 5</a>
+                <h2 class="section-title">🧭 Lessons</h2>
+                <div class="exercise-box">
+                    <div class="exercise-number">Lesson pages</div>
+                    <p>Continue into lessons and exercises from this module.</p>
+                    <div class="nav-buttons" style="margin-top: 15px; padding-top: 0; border-top: none;">
+                        <a href="module-02.html" class="nav-button">Module 02 Home</a>
+                    </div>
                 </div>
             </div>
             
-            <!-- Navigation -->
             <div class="nav-buttons">
                 <a href="module-01.html" class="nav-button secondary">← Previous Module</a>
-                <a href="../index.html" class="nav-button secondary">Back to Home</a>
                 <a href="module-03.html" class="nav-button">Next Module →</a>
             </div>
         </div>
     </div>
-    
+
     <script>
+        function toggleSolution(button) {
+            const nextDiv = button.nextElementSibling;
+            if (nextDiv && nextDiv.classList.contains('solution-content')) {
+                nextDiv.classList.toggle('show');
+                button.textContent = nextDiv.classList.contains('show') ? '👁️ Hide Solution' : '👁️ Show Solution';
+            }
+        }
         hljs.highlightAll();
     </script>
 </body>
