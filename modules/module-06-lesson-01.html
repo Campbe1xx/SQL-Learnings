@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Module 06 Lesson 01 - Views | SQL for Engineers</title><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/atom-one-dark.min.css"><script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script><style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;line-height:1.6;background:#f5f5f5}.navbar{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:#fff;padding:15px 20px;position:sticky;top:0;z-index:100;box-shadow:0 2px 10px rgba(0,0,0,.1)}.navbar-content{max-width:1200px;margin:0 auto;display:flex;justify-content:space-between;align-items:center}.navbar a{color:#fff;text-decoration:none;font-weight:600}.container{max-width:1000px;margin:0 auto;background:#fff;min-height:calc(100vh - 60px)}.breadcrumb{background:#f6f8fa;padding:15px 20px;border-bottom:1px solid #e1e4e8;font-size:.9em}.breadcrumb a{color:#667eea;text-decoration:none}.content{padding:40px 30px}.module-header{color:#667eea;margin-bottom:30px;border-bottom:3px solid #667eea;padding-bottom:15px}.module-header h1{font-size:2em;margin-bottom:5px}.module-header p{color:#586069;font-size:1.1em}.badge{display:inline-block;padding:4px 8px;border-radius:4px;font-size:.85em;font-weight:600;margin-bottom:10px;background:#dc3545;color:#fff}.section{margin-bottom:40px}.section-title{font-size:1.5em;color:#24292e;margin-bottom:15px;border-left:4px solid #667eea;padding-left:15px}pre{margin:15px 0;border-radius:6px;overflow-x:auto}.nav-buttons{display:flex;justify-content:space-between;gap:10px;margin-top:40px;padding-top:20px;border-top:1px solid #e1e4e8}.nav-button{flex:1;padding:12px 20px;background:#667eea;color:#fff;text-decoration:none;border-radius:6px;text-align:center;font-weight:600}.nav-button.secondary{background:#6c757d}</style></head>
+<body><div class="navbar"><div class="navbar-content"><a href="../index.html">📚 SQL for Engineers</a><nav><a href="../index.html">Home</a> | <a href="../index.html#modules">Modules</a> | <a href="../index.html#roots">Practice Packs</a></nav></div></div><div class="breadcrumb"><a href="../index.html">Home</a> / <a href="../index.html#modules">Modules</a> / <a href="module-06.html">Module 06 - Advanced SQL</a> / <strong>Lesson 01</strong></div><div class="container"><div class="content"><div class="module-header"><h1>🧠 Module 06 · Lesson 01: Views</h1><p>Create reusable virtual tables and performance-focused materialized snapshots</p><span class="badge">Advanced</span></div><div class="section"><h2 class="section-title">📖 Lesson Overview</h2><p>A view is a saved SQL query that acts like a virtual table. It doesn't store data itself — it runs the underlying query each time you access it.</p></div><div class="section"><h2 class="section-title">💻 SQL Examples</h2><pre><code class="language-sql">-- Create a production summary view
+CREATE VIEW v_production_summary AS
+SELECT m.machine_name,
+       m.location,
+       COUNT(po.order_id)        AS total_orders,
+       SUM(po.units_produced)    AS total_units,
+       ROUND(AVG(po.units_produced), 2) AS avg_units
+FROM machines m
+LEFT JOIN production_orders po ON m.machine_id = po.machine_id
+GROUP BY m.machine_name, m.location;
+
+-- Use it like a table
+SELECT * FROM v_production_summary
+ORDER BY total_units DESC;
+
+-- Drop a view
+DROP VIEW v_production_summary;</code></pre><h3>Materialized Views</h3><p>Stores the result physically — must be refreshed manually. Useful for slow, expensive queries.</p><pre><code class="language-sql">CREATE MATERIALIZED VIEW mv_monthly_output AS
+SELECT TO_CHAR(start_time, 'YYYY-MM') AS month,
+       machine_id,
+       SUM(units_produced) AS total_units
+FROM production_orders
+GROUP BY TO_CHAR(start_time, 'YYYY-MM'), machine_id;
+
+-- Refresh when needed
+REFRESH MATERIALIZED VIEW mv_monthly_output;</code></pre></div><div class="nav-buttons"><a href="module-06.html" class="nav-button secondary">← Back to Module 06</a><a href="module-06.html" class="nav-button secondary">Module Overview</a><a href="module-06-lesson-02.html" class="nav-button">Next Lesson →</a></div></div></div><script>hljs.highlightAll();</script></body></html>
