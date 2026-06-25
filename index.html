@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -8,6 +8,7 @@
   <style>
     :root {
       --bg: #0b1020;
+      --bg-grad: radial-gradient(1200px 600px at 20% -10%, #1a2b63 0%, rgba(26,43,99,0) 60%);
       --panel: #121a33;
       --text: #eaf0ff;
       --muted: #b8c4e6;
@@ -16,6 +17,23 @@
       --border: #26345f;
       --card: #111935;
       --shadow: 0 10px 30px rgba(0,0,0,0.35);
+      --toggle-bg: #0f1731;
+      --toggle-text: #dbe7ff;
+    }
+
+    html[data-theme="light"] {
+      --bg: #f3f6ff;
+      --bg-grad: radial-gradient(1100px 500px at 20% -10%, #dbe7ff 0%, rgba(219,231,255,0) 65%);
+      --panel: #ffffff;
+      --text: #10203b;
+      --muted: #4e6287;
+      --accent: #3669d6;
+      --accent-2: #0f9e7a;
+      --border: #d5def2;
+      --card: #ffffff;
+      --shadow: 0 8px 24px rgba(20, 40, 90, 0.08);
+      --toggle-bg: #ffffff;
+      --toggle-text: #1f3357;
     }
 
     * { box-sizing: border-box; }
@@ -23,9 +41,10 @@
     body {
       margin: 0;
       font-family: Inter, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
-      background: radial-gradient(1200px 600px at 20% -10%, #1a2b63 0%, rgba(26,43,99,0) 60%), var(--bg);
+      background: var(--bg-grad), var(--bg);
       color: var(--text);
       line-height: 1.6;
+      transition: background-color .2s ease, color .2s ease;
     }
 
     .container {
@@ -33,8 +52,44 @@
       margin: 0 auto;
     }
 
+    .topbar {
+      border-bottom: 1px solid var(--border);
+      background: color-mix(in srgb, var(--panel) 80%, transparent);
+      backdrop-filter: blur(6px);
+      position: sticky;
+      top: 0;
+      z-index: 20;
+    }
+
+    .topbar-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 0;
+    }
+
+    .brand {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.2;
+    }
+
+    .brand strong { font-size: 0.95rem; }
+    .brand span { color: var(--muted); font-size: 0.82rem; }
+
+    .theme-toggle {
+      border: 1px solid var(--border);
+      background: var(--toggle-bg);
+      color: var(--toggle-text);
+      border-radius: 10px;
+      padding: 8px 12px;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+
     .hero {
-      padding: 72px 0 40px;
+      padding: 56px 0 36px;
     }
 
     .pill {
@@ -158,16 +213,20 @@
       font-size: 0.92rem;
     }
 
-    code.inline {
-      background: rgba(255,255,255,0.08);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      padding: 2px 6px;
-      color: var(--text);
-    }
+    a { color: var(--accent); }
   </style>
 </head>
 <body>
+  <div class="topbar">
+    <div class="container topbar-inner">
+      <div class="brand">
+        <strong>SQL Learnings</strong>
+        <span>By Collin Campbell</span>
+      </div>
+      <button id="themeToggle" class="theme-toggle" type="button" aria-label="Toggle light and dark theme">🌙 Dark</button>
+    </div>
+  </div>
+
   <header class="hero">
     <div class="container">
       <span class="pill">SQL Learnings • GitHub Pages</span>
@@ -180,82 +239,56 @@
         <a class="btn primary" href="./Module_01_Foundations/01_lesson">Start Module 01</a>
         <a class="btn" href="https://github.com/Campbe1xx/SQL-Learnings" target="_blank" rel="noopener">View on GitHub</a>
       </div>
-      <p class="meta">Tip: If a module link returns 404, verify that lesson filename exists in that folder.</p>
+      <p class="meta">Created by <strong>Collin Campbell</strong>. Tip: If a module link returns 404, verify that lesson filename exists in that folder.</p>
     </div>
   </header>
 
   <main class="container">
     <h2 class="section-title">📚 Course Modules</h2>
     <section class="grid">
-      <a class="card" href="./Module_01_Foundations/01_lesson">
-        <span class="kicker">Module 01</span>
-        <h3>Foundations & Core Concepts</h3>
-        <p>Relational databases, keys, data types, and SQL syntax basics.</p>
-      </a>
-
-      <a class="card" href="./Module_02_Reading_Data/01_select_where_order">
-        <span class="kicker">Module 02</span>
-        <h3>Reading Data</h3>
-        <p>SELECT, WHERE, ORDER BY, filtering, and result shaping.</p>
-      </a>
-
-      <a class="card" href="./Module_03_Writing_Data/01_insert_update_delete">
-        <span class="kicker">Module 03</span>
-        <h3>Writing Data</h3>
-        <p>INSERT, UPDATE, DELETE, and safe data modification workflows.</p>
-      </a>
-
-      <a class="card" href="./Module_04_Building_Structures/01_create_alter_drop">
-        <span class="kicker">Module 04</span>
-        <h3>Building Structures</h3>
-        <p>CREATE, ALTER, DROP, constraints, and schema design patterns.</p>
-      </a>
-
-      <a class="card" href="./Module_05_Transactions/01_transactions_basics">
-        <span class="kicker">Module 05</span>
-        <h3>Transactions</h3>
-        <p>BEGIN, COMMIT, ROLLBACK, and consistency in real workflows.</p>
-      </a>
-
-      <a class="card" href="./Module_06_Advanced_SQL/01_joins_subqueries_ctes">
-        <span class="kicker">Module 06</span>
-        <h3>Advanced SQL</h3>
-        <p>JOINs, subqueries, CTEs, and multi-table analysis techniques.</p>
-      </a>
-
-      <a class="card" href="./Module_07_Performance/01_indexing_query_plans">
-        <span class="kicker">Module 07</span>
-        <h3>Performance</h3>
-        <p>Indexing, EXPLAIN plans, and practical optimization basics.</p>
-      </a>
-
-      <a class="card" href="./Module_08_Security/01_roles_permissions">
-        <span class="kicker">Module 08</span>
-        <h3>Security</h3>
-        <p>Roles, grants, least privilege, and database access controls.</p>
-      </a>
-
-      <a class="card" href="./Module_09_Projects/01_capstone_project">
-        <span class="kicker">Module 09</span>
-        <h3>Projects</h3>
-        <p>Capstone project applying all learned SQL concepts end-to-end.</p>
-      </a>
+      <a class="card" href="./Module_01_Foundations/01_lesson"><span class="kicker">Module 01</span><h3>Foundations & Core Concepts</h3><p>Relational databases, keys, data types, and SQL syntax basics.</p></a>
+      <a class="card" href="./Module_02_Reading_Data/01_select_where_order"><span class="kicker">Module 02</span><h3>Reading Data</h3><p>SELECT, WHERE, ORDER BY, filtering, and result shaping.</p></a>
+      <a class="card" href="./Module_03_Writing_Data/01_insert_update_delete"><span class="kicker">Module 03</span><h3>Writing Data</h3><p>INSERT, UPDATE, DELETE, and safe data modification workflows.</p></a>
+      <a class="card" href="./Module_04_Building_Structures/01_create_alter_drop"><span class="kicker">Module 04</span><h3>Building Structures</h3><p>CREATE, ALTER, DROP, constraints, and schema design patterns.</p></a>
+      <a class="card" href="./Module_05_Transactions/01_transactions_basics"><span class="kicker">Module 05</span><h3>Transactions</h3><p>BEGIN, COMMIT, ROLLBACK, and consistency in real workflows.</p></a>
+      <a class="card" href="./Module_06_Advanced_SQL/01_joins_subqueries_ctes"><span class="kicker">Module 06</span><h3>Advanced SQL</h3><p>JOINs, subqueries, CTEs, and multi-table analysis techniques.</p></a>
+      <a class="card" href="./Module_07_Performance/01_indexing_query_plans"><span class="kicker">Module 07</span><h3>Performance</h3><p>Indexing, EXPLAIN plans, and practical optimization basics.</p></a>
+      <a class="card" href="./Module_08_Security/01_roles_permissions"><span class="kicker">Module 08</span><h3>Security</h3><p>Roles, grants, least privilege, and database access controls.</p></a>
+      <a class="card" href="./Module_09_Projects/01_capstone_project"><span class="kicker">Module 09</span><h3>Projects</h3><p>Capstone project applying all learned SQL concepts end-to-end.</p></a>
     </section>
 
     <h2 class="section-title">🧪 Exercises</h2>
     <section class="grid">
-      <a class="card" href="./Module_01_Foundations/exercises/ex01_identify_entities">
-        <span class="kicker">Exercise 01</span>
-        <h3>Identify Your Database Entities</h3>
-        <p>Practice modeling tables, attributes, relationships, and data types.</p>
-      </a>
+      <a class="card" href="./Module_01_Foundations/exercises/ex01_identify_entities"><span class="kicker">Exercise 01</span><h3>Identify Your Database Entities</h3><p>Practice modeling tables, attributes, relationships, and data types.</p></a>
     </section>
   </main>
 
   <footer>
     <div class="container">
-      Built with GitHub Pages • Repository: <a href="https://github.com/Campbe1xx/SQL-Learnings" target="_blank" rel="noopener">Campbe1xx/SQL-Learnings</a>
+      Built with GitHub Pages • Created by <strong>Collin Campbell</strong> • Repository: <a href="https://github.com/Campbe1xx/SQL-Learnings" target="_blank" rel="noopener">Campbe1xx/SQL-Learnings</a>
     </div>
   </footer>
+
+  <script>
+    (function () {
+      const root = document.documentElement;
+      const btn = document.getElementById('themeToggle');
+      const saved = localStorage.getItem('sql-learnings-theme');
+      const preferred = saved || (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+
+      function applyTheme(theme) {
+        root.setAttribute('data-theme', theme);
+        btn.textContent = theme === 'dark' ? '🌙 Dark' : '☀️ Light';
+      }
+
+      applyTheme(preferred);
+
+      btn.addEventListener('click', function () {
+        const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        applyTheme(next);
+        localStorage.setItem('sql-learnings-theme', next);
+      });
+    })();
+  </script>
 </body>
 </html>
