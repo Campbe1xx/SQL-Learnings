@@ -1,0 +1,3 @@
+-- Uses the same schema as Project 01.
+-- Run Project_01_Downtime_Tracker/schema.sql first.
+-- Then load Project_01_Downtime_Tracker/sample_data.sql.
