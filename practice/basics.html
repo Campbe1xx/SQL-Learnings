@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Practice Pack: Basics | SQL for Engineers</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            background: #f5f5f5;
+        }
+        
+        .navbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .navbar-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .navbar a:hover {
+            opacity: 0.8;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            min-height: calc(100vh - 60px);
+        }
+        
+        .breadcrumb {
+            background: #f6f8fa;
+            padding: 15px 20px;
+            border-bottom: 1px solid #e1e4e8;
+            font-size: 0.9em;
+        }
+        
+        .breadcrumb a {
+            color: #667eea;
+            text-decoration: none;
+        }
+        
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+        
+        .content {
+            padding: 40px 30px;
+        }
+        
+        .module-header {
+            color: #667eea;
+            margin-bottom: 30px;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 15px;
+        }
+        
+        .module-header h1 {
+            font-size: 2em;
+            margin-bottom: 5px;
+        }
+        
+        .module-header p {
+            color: #586069;
+            font-size: 1.1em;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.85em;
+            font-weight: 600;
+            margin-bottom: 10px;
+            background: #28a745;
+            color: white;
+        }
+        
+        .section {
+            margin-bottom: 40px;
+        }
+        
+        .section-title {
+            font-size: 1.5em;
+            color: #24292e;
+            margin-bottom: 15px;
+            border-left: 4px solid #667eea;
+            padding-left: 15px;
+        }
+        
+        .code-block {
+            background: #282c34;
+            color: #abb2bf;
+            padding: 15px;
+            border-radius: 6px;
+            overflow-x: auto;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            line-height: 1.5;
+        }
+        
+        .exercise-box {
+            background: #f6f8fa;
+            border: 1px solid #e1e4e8;
+            border-radius: 6px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .solution-toggle {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 10px;
+            transition: background 0.3s ease;
+        }
+        
+        .solution-toggle:hover {
+            background: #218838;
+        }
+        
+        .solution-content {
+            display: none;
+            background: #f6f8fa;
+            border: 1px solid #e1e4e8;
+            border-radius: 6px;
+            padding: 20px;
+            margin-top: 15px;
+        }
+        
+        .solution-content.show {
+            display: block;
+        }
+        
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #e1e4e8;
+        }
+        
+        .nav-button {
+            flex: 1;
+            padding: 12px 20px;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            text-align: center;
+            font-weight: 600;
+            transition: background 0.3s ease;
+        }
+        
+        .nav-button:hover {
+            background: #764ba2;
+        }
+        
+        .nav-button.secondary {
+            background: #6c757d;
+        }
+        
+        .nav-button.secondary:hover {
+            background: #5a6268;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="navbar-content">
+            <a href="../index.html">📘 SQL for Engineers</a>
+            <nav>
+                <a href="../index.html">Home</a> | 
+                <a href="../index.html#modules">Modules</a> | 
+                <a href="../index.html#roots">Practice Packs</a>
+            </nav>
+        </div>
+    </div>
+    
+    <div class="breadcrumb">
+        <a href="../index.html">Home</a> / 
+        <a href="../index.html#roots">Practice Packs</a> / 
+        <strong>Basics – Beginner SELECT</strong>
+    </div>
+    
+    <div class="container">
+        <div class="content">
+            <div class="module-header">
+                <h1>📦 Root Practice Pack – Basics</h1>
+                <p>Beginner SELECT Practice – No prerequisites needed!</p>
+                <span class="badge">Beginner</span>
+            </div>
+            
+            <div class="section">
+                <h2 class="section-title">📖 About This Pack</h2>
+                <p>This practice pack is perfect for SQL beginners. You'll learn:</p>
+                <ul style="margin-left: 20px; line-height: 1.8;">
+                    <li>How to use SELECT to retrieve data</li>
+                    <li>Column selection and filtering</li>
+                    <li>Sorting results with ORDER BY</li>
+                    <li>Limiting result sets with LIMIT</li>
+                </ul>
+            </div>
+            
+            <div class="section">
+                <h2 class="section-title">✏️ Exercise: Beginner SELECT Practice</h2>
+                <div class="exercise-box">
+                    <p><strong>Setup:</strong> Run the SQL below first</p>
+                    
+                    <div class="code-block">-- ============================================================
+-- Root Exercises – Basics
+-- Exercise 1: Beginner SELECT Practice
+-- ============================================================
+-- SETUP: Run this section first to create and populate tables
+-- ============================================================
+
+DROP TABLE IF EXISTS products;
+
+CREATE TABLE products (
+    product_id SERIAL PRIMARY KEY,
+    product_name VARCHAR(100) NOT NULL,
+    category VARCHAR(50) NOT NULL,
+    unit_price NUMERIC(10,2) NOT NULL,
+    in_stock BOOLEAN NOT NULL
+);
+
+INSERT INTO products (product_name, category, unit_price, in_stock) VALUES
+    ('Servo Motor', 'Motion', 320.00, TRUE),
+    ('Linear Rail', 'Motion', 85.00, TRUE),
+    ('Laser Nozzle', 'Cutting', 24.50, FALSE),
+    ('Pressure Sensor', 'Instrumentation', 48.99, TRUE),
+    ('Hydraulic Seal Kit', 'Fluid Power', 39.75, TRUE);</div>
+                    
+                    <p style="margin-top: 15px;"><strong>Questions:</strong></p>
+                    
+                    <div style="margin-top: 15px;">
+                        <p><strong>Q1: List all products.</strong></p>
+                        <p style="color: #586069; margin: 10px 0;">Write your query below:</p>
+                    </div>
+                    
+                    <div style="margin-top: 15px;">
+                        <p><strong>Q2: Show product_name and unit_price only.</strong></p>
+                        <p style="color: #586069; margin: 10px 0;">Write your query below:</p>
+                    </div>
+                    
+                    <div style="margin-top: 15px;">
+                        <p><strong>Q3: Return products where in_stock is TRUE.</strong></p>
+                        <p style="color: #586069; margin: 10px 0;">Write your query below:</p>
+                    </div>
+                    
+                    <div style="margin-top: 15px;">
+                        <p><strong>Q4: Order products by unit_price from highest to lowest.</strong></p>
+                        <p style="color: #586069; margin: 10px 0;">Write your query below:</p>
+                    </div>
+                    
+                    <div style="margin-top: 15px;">
+                        <p><strong>Q5: Return the first 3 rows only.</strong></p>
+                        <p style="color: #586069; margin: 10px 0;">Write your query below:</p>
+                    </div>
+                    
+                    <button class="solution-toggle" onclick="toggleSolution(this)">👁️ Show Solution</button>
+                    
+                    <div class="solution-content">
+                        <p><strong>Q1 Solution:</strong></p>
+                        <div class="code-block">SELECT * FROM products;</div>
+                        
+                        <p style="margin-top: 15px;"><strong>Q2 Solution:</strong></p>
+                        <div class="code-block">SELECT product_name, unit_price FROM products;</div>
+                        
+                        <p style="margin-top: 15px;"><strong>Q3 Solution:</strong></p>
+                        <div class="code-block">SELECT * FROM products WHERE in_stock = TRUE;</div>
+                        
+                        <p style="margin-top: 15px;"><strong>Q4 Solution:</strong></p>
+                        <div class="code-block">SELECT product_name, unit_price FROM products ORDER BY unit_price DESC;</div>
+                        
+                        <p style="margin-top: 15px;"><strong>Q5 Solution:</strong></p>
+                        <div class="code-block">SELECT * FROM products ORDER BY product_id LIMIT 3;</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Navigation -->
+            <div class="nav-buttons">
+                <a href="../index.html" class="nav-button secondary">← Back to Home</a>
+                <a href="aggregations.html" class="nav-button">Next Pack →</a>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function toggleSolution(button) {
+            const nextDiv = button.nextElementSibling;
+            if (nextDiv && nextDiv.classList.contains('solution-content')) {
+                nextDiv.classList.toggle('show');
+                button.textContent = nextDiv.classList.contains('show') ? '👁️ Hide Solution' : '👁️ Show Solution';
+            }
+        }
+        
+        hljs.highlightAll();
+    </script>
+</body>
+</html>
