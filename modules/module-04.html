@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 04 - Building Structures | SQL for Engineers</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            background: #f5f5f5;
+        }
+        
+        .navbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .navbar-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .navbar a:hover {
+            opacity: 0.8;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            min-height: calc(100vh - 60px);
+        }
+        
+        .breadcrumb {
+            background: #f6f8fa;
+            padding: 15px 20px;
+            border-bottom: 1px solid #e1e4e8;
+            font-size: 0.9em;
+        }
+        
+        .breadcrumb a {
+            color: #667eea;
+            text-decoration: none;
+        }
+        
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+        
+        .content {
+            padding: 40px 30px;
+        }
+        
+        .module-header {
+            color: #667eea;
+            margin-bottom: 30px;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 15px;
+        }
+        
+        .module-header h1 {
+            font-size: 2em;
+            margin-bottom: 5px;
+        }
+        
+        .module-header p {
+            color: #586069;
+            font-size: 1.1em;
+        }
+        
+        .section {
+            margin-bottom: 40px;
+        }
+        
+        .section-title {
+            font-size: 1.5em;
+            color: #24292e;
+            margin-bottom: 15px;
+            border-left: 4px solid #667eea;
+            padding-left: 15px;
+        }
+        
+        .exercise-box {
+            background: #f6f8fa;
+            border: 1px solid #e1e4e8;
+            border-radius: 6px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .exercise-number {
+            font-weight: 600;
+            color: #667eea;
+            font-size: 1.1em;
+            margin-bottom: 10px;
+        }
+        
+        .code-block {
+            background: #282c34;
+            color: #abb2bf;
+            padding: 15px;
+            border-radius: 6px;
+            overflow-x: auto;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            line-height: 1.5;
+        }
+        
+        .solution-toggle {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 10px;
+            transition: background 0.3s ease;
+        }
+        
+        .solution-toggle:hover {
+            background: #218838;
+        }
+        
+        .solution-content {
+            display: none;
+            background: #f6f8fa;
+            border: 1px solid #e1e4e8;
+            border-radius: 6px;
+            padding: 20px;
+            margin-top: 15px;
+        }
+        
+        .solution-content.show {
+            display: block;
+        }
+        
+        .solution-label {
+            font-weight: 600;
+            color: #28a745;
+            margin-bottom: 10px;
+        }
+        
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #e1e4e8;
+        }
+        
+        .nav-button {
+            flex: 1;
+            padding: 12px 20px;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            text-align: center;
+            font-weight: 600;
+            transition: background 0.3s ease;
+        }
+        
+        .nav-button:hover {
+            background: #764ba2;
+        }
+        
+        .nav-button.secondary {
+            background: #6c757d;
+        }
+        
+        .nav-button.secondary:hover {
+            background: #5a6268;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.85em;
+            font-weight: 600;
+            margin-bottom: 10px;
+            background: #ffc107;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="navbar-content">
+            <a href="../index.html">📘 SQL for Engineers</a>
+            <nav>
+                <a href="../index.html">Home</a> | 
+                <a href="../index.html#modules">Modules</a> | 
+                <a href="../index.html#roots">Practice Packs</a>
+            </nav>
+        </div>
+    </div>
+    
+    <div class="breadcrumb">
+        <a href="../index.html">Home</a> / 
+        <a href="../index.html#modules">Modules</a> / 
+        <strong>Module 04 - Building Structures</strong>
+    </div>
+    
+    <div class="container">
+        <div class="content">
+            <div class="module-header">
+                <h1>📘 Module 04 – Building Structures</h1>
+                <p>Master table design with CREATE, ALTER, DROP, constraints, and indexes</p>
+                <span class="badge">Intermediate</span>
+            </div>
+            
+            <div class="section">
+                <h2 class="section-title">📖 Lesson Overview</h2>
+                <p>In this module, you'll learn:</p>
+                <ul style="margin-left: 20px; line-height: 1.8;">
+                    <li><strong>CREATE TABLE</strong> – Define tables with constraints</li>
+                    <li><strong>ALTER TABLE</strong> – Add columns, constraints, modify structure</li>
+                    <li><strong>DROP TABLE</strong> – Remove tables safely</li>
+                    <li><strong>Constraints</strong> – PRIMARY KEY, FOREIGN KEY, UNIQUE, CHECK, NOT NULL</li>
+                    <li><strong>Indexes</strong> – Single and composite indexes for performance</li>
+                </ul>
+            </div>
+            
+            <!-- Exercise 1 -->
+            <div class="section">
+                <h2 class="section-title">✏️ Exercise 1: CREATE, ALTER, DROP, and Indexes</h2>
+                <div class="exercise-box">
+                    <div class="exercise-number">Exercise 1 – Setup & Questions</div>
+                    
+                    <p><strong>Setup:</strong> Run the SQL below first to create supporting tables</p>
+                    
+                    <div class="code-block">-- ============================================================
+-- Module 04 – Building Structures
+-- Exercise 1: CREATE, ALTER, DROP, and Indexes
+-- ============================================================
+-- SETUP: Run this section first to create supporting tables
+-- ============================================================
+
+DROP TABLE IF EXISTS machines CASCADE;
+
+CREATE TABLE machines (
+    machine_id SERIAL PRIMARY KEY,
+    machine_name VARCHAR(100) NOT NULL
+);
+
+INSERT INTO machines (machine_name) VALUES
+    ('CNC Mill Alpha'),
+    ('Laser Cutter L2'),
+    ('Robot Arm R7');</div>
+                    
+                    <p style="margin-top: 20px;"><strong>Questions:</strong></p>
+                    
+                    <div style="margin-top: 15px;">
+                        <p><strong>Q1: CREATE a sensors table with: sensor_id, machine_id (FK), sensor_type, unit, min_value, max_value, installed_date. Include PRIMARY KEY, FOREIGN KEY, NOT NULL, and CHECK constraints.</strong></p>
+                        <p style="color: #586069; margin: 10px 0;">Write your DDL below:</p>
+                    </div>
+                    
+                    <div style="margin-top: 15px;">
+                        <p><strong>Q2: ALTER the sensors table to add a calibration_date column.</strong></p>
+                        <p style="color: #586069; margin: 10px 0;">Write your DDL below:</p>
+                    </div>
+                    
+                    <div style="margin-top: 15px;">
+                        <p><strong>Q3: ALTER the sensors table to add a CHECK constraint ensuring min_value < max_value.</strong></p>
+                        <p style="color: #586069; margin: 10px 0;">Write your DDL below:</p>
+                    </div>
+                    
+                    <div style="margin-top: 15px;">
+                        <p><strong>Q4: CREATE an index on machine_id.</strong></p>
+                        <p style="color: #586069; margin: 10px 0;">Write your DDL below:</p>
+                    </div>
+                    
+                    <div style="margin-top: 15px;">
+                        <p><strong>Q5: DROP the single-column index, then recreate it as a composite index on (machine_id, sensor_type).</strong></p>
+                        <p style="color: #586069; margin: 10px 0;">Write your DDL below:</p>
+                    </div>
+                    
+                    <div style="margin-top: 20px; padding: 15px; background: #fff3cd; border-radius: 6px;">
+                        <strong>Challenge:</strong>
+                        <p style="margin-top: 10px;"><strong>C1: Write the DDL to rename the table and then rename a column.</strong></p>
+                    </div>
+                    
+                    <button class="solution-toggle" onclick="toggleSolution(this)">👁️ Show Solution</button>
+                    
+                    <div class="solution-content">
+                        <div class="solution-label">📋 Solution 1</div>
+                        
+                        <p><strong>Q1 Solution:</strong></p>
+                        <div class="code-block">CREATE TABLE sensors (
+    sensor_id SERIAL PRIMARY KEY,
+    machine_id INT NOT NULL REFERENCES machines (machine_id),
+    sensor_type VARCHAR(50) NOT NULL,
+    unit VARCHAR(20) NOT NULL,
+    min_value NUMERIC(10,2) NOT NULL,
+    max_value NUMERIC(10,2) NOT NULL,
+    installed_date DATE NOT NULL,
+    CHECK (min_value >= 0),
+    CHECK (max_value >= 0)
+);</div>
+                        
+                        <p style="margin-top: 15px;"><strong>Q2 Solution:</strong></p>
+                        <div class="code-block">ALTER TABLE sensors
+ADD COLUMN calibration_date DATE;</div>
+                        
+                        <p style="margin-top: 15px;"><strong>Q3 Solution:</strong></p>
+                        <div class="code-block">ALTER TABLE sensors
+ADD CONSTRAINT sensors_min_lt_max_chk CHECK (min_value < max_value);</div>
+                        
+                        <p style="margin-top: 15px;"><strong>Q4 Solution:</strong></p>
+                        <div class="code-block">CREATE INDEX idx_sensors_machine_id
+    ON sensors (machine_id);</div>
+                        
+                        <p style="margin-top: 15px;"><strong>Q5 Solution:</strong></p>
+                        <div class="code-block">DROP INDEX IF EXISTS idx_sensors_machine_id;
+
+CREATE INDEX idx_sensors_machine_type
+    ON sensors (machine_id, sensor_type);</div>
+                        
+                        <p style="margin-top: 15px;"><strong>C1 Solution:</strong></p>
+                        <div class="code-block">ALTER TABLE sensors
+RENAME TO machine_sensors;
+
+ALTER TABLE machine_sensors
+RENAME COLUMN sensor_type TO sensor_category;</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Navigation -->
+            <div class="nav-buttons">
+                <a href="module-03.html" class="nav-button secondary">← Previous Module</a>
+                <a href="../index.html" class="nav-button secondary">Back to Home</a>
+                <a href="module-05.html" class="nav-button">Next Module →</a>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function toggleSolution(button) {
+            const nextDiv = button.nextElementSibling;
+            if (nextDiv && nextDiv.classList.contains('solution-content')) {
+                nextDiv.classList.toggle('show');
+                button.textContent = nextDiv.classList.contains('show') ? '👁️ Hide Solution' : '👁️ Show Solution';
+            }
+        }
+        
+        hljs.highlightAll();
+    </script>
+</body>
+</html>

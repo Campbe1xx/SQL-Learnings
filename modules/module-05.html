@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 05 - Transactions | SQL for Engineers</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            background: #f5f5f5;
+        }
+        
+        .navbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .navbar-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .navbar a:hover {
+            opacity: 0.8;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            min-height: calc(100vh - 60px);
+        }
+        
+        .breadcrumb {
+            background: #f6f8fa;
+            padding: 15px 20px;
+            border-bottom: 1px solid #e1e4e8;
+            font-size: 0.9em;
+        }
+        
+        .breadcrumb a {
+            color: #667eea;
+            text-decoration: none;
+        }
+        
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+        
+        .content {
+            padding: 40px 30px;
+        }
+        
+        .module-header {
+            color: #667eea;
+            margin-bottom: 30px;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 15px;
+        }
+        
+        .module-header h1 {
+            font-size: 2em;
+            margin-bottom: 5px;
+        }
+        
+        .module-header p {
+            color: #586069;
+            font-size: 1.1em;
+        }
+        
+        .section {
+            margin-bottom: 40px;
+        }
+        
+        .section-title {
+            font-size: 1.5em;
+            color: #24292e;
+            margin-bottom: 15px;
+            border-left: 4px solid #667eea;
+            padding-left: 15px;
+        }
+        
+        .exercise-box {
+            background: #f6f8fa;
+            border: 1px solid #e1e4e8;
+            border-radius: 6px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .exercise-number {
+            font-weight: 600;
+            color: #667eea;
+            font-size: 1.1em;
+            margin-bottom: 10px;
+        }
+        
+        .code-block {
+            background: #282c34;
+            color: #abb2bf;
+            padding: 15px;
+            border-radius: 6px;
+            overflow-x: auto;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            line-height: 1.5;
+        }
+        
+        .solution-toggle {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 10px;
+            transition: background 0.3s ease;
+        }
+        
+        .solution-toggle:hover {
+            background: #218838;
+        }
+        
+        .solution-content {
+            display: none;
+            background: #f6f8fa;
+            border: 1px solid #e1e4e8;
+            border-radius: 6px;
+            padding: 20px;
+            margin-top: 15px;
+        }
+        
+        .solution-content.show {
+            display: block;
+        }
+        
+        .solution-label {
+            font-weight: 600;
+            color: #28a745;
+            margin-bottom: 10px;
+        }
+        
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #e1e4e8;
+        }
+        
+        .nav-button {
+            flex: 1;
+            padding: 12px 20px;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            text-align: center;
+            font-weight: 600;
+            transition: background 0.3s ease;
+        }
+        
+        .nav-button:hover {
+            background: #764ba2;
+        }
+        
+        .nav-button.secondary {
+            background: #6c757d;
+        }
+        
+        .nav-button.secondary:hover {
+            background: #5a6268;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.85em;
+            font-weight: 600;
+            margin-bottom: 10px;
+            background: #ffc107;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="navbar-content">
+            <a href="../index.html">📘 SQL for Engineers</a>
+            <nav>
+                <a href="../index.html">Home</a> | 
+                <a href="../index.html#modules">Modules</a> | 
+                <a href="../index.html#roots">Practice Packs</a>
+            </nav>
+        </div>
+    </div>
+    
+    <div class="breadcrumb">
+        <a href="../index.html">Home</a> / 
+        <a href="../index.html#modules">Modules</a> / 
+        <strong>Module 05 - Transactions</strong>
+    </div>
+    
+    <div class="container">
+        <div class="content">
+            <div class="module-header">
+                <h1>📘 Module 05 – Transactions</h1>
+                <p>Understand ACID properties, COMMIT, ROLLBACK, SAVEPOINT, and isolation levels</p>
+                <span class="badge">Intermediate</span>
+            </div>
+            
+            <div class="section">
+                <h2 class="section-title">📖 Lesson Overview</h2>
+                <p>In this module, you'll learn:</p>
+                <ul style="margin-left: 20px; line-height: 1.8;">
+                    <li><strong>ACID Properties</strong> – Atomicity, Consistency, Isolation, Durability</li>
+                    <li><strong>BEGIN/COMMIT</strong> – Start and confirm transactions</li>
+                    <li><strong>ROLLBACK</strong> – Undo all changes in a transaction</li>
+                    <li><strong>SAVEPOINT</strong> – Partial rollback within transactions</li>
+                    <li><strong>Isolation Levels</strong> – READ UNCOMMITTED, READ COMMITTED, REPEATABLE READ, SERIALIZABLE</li>
+                </ul>
+            </div>
+            
+            <!-- Exercise 1 -->
+            <div class="section">
+                <h2 class="section-title">✏️ Exercise 1: ACID, COMMIT, ROLLBACK, SAVEPOINT, and Isolation</h2>
+                <div class="exercise-box">
+                    <div class="exercise-number">Exercise 1 – Setup & Questions</div>
+                    
+                    <p><strong>Setup:</strong> Run the SQL below first to create and populate tables</p>
+                    
+                    <div class="code-block">-- ============================================================
+-- Module 05 – Transactions
+-- Exercise 1: ACID, COMMIT, ROLLBACK, SAVEPOINT, and Isolation
+-- ============================================================
+-- SETUP: Run this section first to create and populate tables
+-- ============================================================
+
+DROP TABLE IF EXISTS inventory_audit;
+DROP TABLE IF EXISTS inventory;
+
+CREATE TABLE inventory (
+    part_id SERIAL PRIMARY KEY,
+    part_name VARCHAR(100) NOT NULL,
+    stock_qty INT NOT NULL CHECK (stock_qty >= 0),
+    warehouse_location VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE inventory_audit (
+    audit_id SERIAL PRIMARY KEY,
+    part_id INT NOT NULL REFERENCES inventory (part_id),
+    action_type VARCHAR(20) NOT NULL,
+    quantity_changed INT NOT NULL,
+    action_timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    notes TEXT
+);
+
+INSERT INTO inventory (part_name, stock_qty, warehouse_location) VALUES
+    ('Bearing Set B-210', 40, 'Stores A'),
+    ('Servo Drive SD-55', 12, 'Stores B'),
+    ('Safety Interlock SI-2', 18, 'Stores A');</div>
+                    
+                    <p style="margin-top: 20px;"><strong>Questions:</strong></p>
+                    
+                    <div style="margin-top: 15px;">
+                        <p><strong>Q1: Write a transaction that transfers 5 units from 'Bearing Set B-210' to 'Servo Drive SD-55' using BEGIN and COMMIT.</strong></p>
+                        <p style="color: #586069; margin: 10px 0;">Write your transaction below:</p>
+                    </div>
+                    
+                    <div style="margin-top: 15px;">
+                        <p><strong>Q2: Write a transaction that intentionally hits an error and uses ROLLBACK. Hint: the inventory table prevents stock_qty from dropping below zero.</strong></p>
+                        <p style="color: #586069; margin: 10px 0;">Write your transaction below:</p>
+                    </div>
+                    
+                    <div style="margin-top: 15px;">
+                        <p><strong>Q3: Use SAVEPOINT to partially roll back within a transaction.</strong></p>
+                        <p style="color: #586069; margin: 10px 0;">Write your transaction below:</p>
+                    </div>
+                    
+                    <div style="margin-top: 15px;">
+                        <p><strong>Q4: Demonstrate why READ COMMITTED prevents dirty reads. Explain via comments and write the two concurrent sessions as separate labeled blocks.</strong></p>
+                        <p style="color: #586069; margin: 10px 0;">Write your answer below:</p>
+                    </div>
+                    
+                    <div style="margin-top: 20px; padding: 15px; background: #fff3cd; border-radius: 6px;">
+                        <strong>Challenge:</strong>
+                        <p style="margin-top: 10px;"><strong>C1: Write a transaction that debits stock and inserts an audit log row atomically.</strong></p>
+                    </div>
+                    
+                    <button class="solution-toggle" onclick="toggleSolution(this)">👁️ Show Solution</button>
+                    
+                    <div class="solution-content">
+                        <div class="solution-label">📋 Solution 1</div>
+                        
+                        <p><strong>Q1 Solution:</strong></p>
+                        <div class="code-block">BEGIN;
+
+UPDATE inventory
+SET stock_qty = stock_qty - 5
+WHERE part_name = 'Bearing Set B-210';
+
+UPDATE inventory
+SET stock_qty = stock_qty + 5
+WHERE part_name = 'Servo Drive SD-55';
+
+COMMIT;</div>
+                        
+                        <p style="margin-top: 15px;"><strong>Q2 Solution:</strong></p>
+                        <div class="code-block">BEGIN;
+
+UPDATE inventory
+SET stock_qty = stock_qty - 1000
+WHERE part_name = 'Servo Drive SD-55';
+
+-- The CHECK constraint will raise an error, leaving the transaction aborted.
+ROLLBACK;</div>
+                        
+                        <p style="margin-top: 15px;"><strong>Q3 Solution:</strong></p>
+                        <div class="code-block">BEGIN;
+
+UPDATE inventory
+SET stock_qty = stock_qty - 2
+WHERE part_name = 'Safety Interlock SI-2';
+
+SAVEPOINT before_second_adjustment;
+
+UPDATE inventory
+SET stock_qty = stock_qty - 50
+WHERE part_name = 'Bearing Set B-210';
+
+ROLLBACK TO SAVEPOINT before_second_adjustment;
+
+UPDATE inventory
+SET stock_qty = stock_qty + 2
+WHERE part_name = 'Servo Drive SD-55';
+
+COMMIT;</div>
+                        
+                        <p style="margin-top: 15px;"><strong>Q4 Solution:</strong></p>
+                        <div class="code-block">-- Session A
+-- BEGIN;
+-- SET TRANSACTION ISOLATION LEVEL READ COMMITTED;
+-- UPDATE inventory
+-- SET stock_qty = stock_qty - 10
+-- WHERE part_name = 'Bearing Set B-210';
+-- -- Session A does not commit yet.
+--
+-- Session B
+-- BEGIN;
+-- SET TRANSACTION ISOLATION LEVEL READ COMMITTED;
+-- SELECT stock_qty
+-- FROM inventory
+-- WHERE part_name = 'Bearing Set B-210';
+-- -- Session B still sees the last committed value, not Session A's uncommitted update.
+-- COMMIT;
+--
+-- Session A
+-- ROLLBACK;
+-- READ COMMITTED prevents Session B from performing a dirty read.</div>
+                        
+                        <p style="margin-top: 15px;"><strong>C1 Solution:</strong></p>
+                        <div class="code-block">BEGIN;
+
+UPDATE inventory
+SET stock_qty = stock_qty - 3
+WHERE part_name = 'Bearing Set B-210';
+
+INSERT INTO inventory_audit (part_id, action_type, quantity_changed, notes)
+SELECT part_id,
+       'DEBIT',
+       -3,
+       'Issued to urgent spindle repair job.'
+FROM inventory
+WHERE part_name = 'Bearing Set B-210';
+
+COMMIT;</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Navigation -->
+            <div class="nav-buttons">
+                <a href="module-04.html" class="nav-button secondary">← Previous Module</a>
+                <a href="../index.html" class="nav-button secondary">Back to Home</a>
+                <a href="module-06.html" class="nav-button">Next Module →</a>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function toggleSolution(button) {
+            const nextDiv = button.nextElementSibling;
+            if (nextDiv && nextDiv.classList.contains('solution-content')) {
+                nextDiv.classList.toggle('show');
+                button.textContent = nextDiv.classList.contains('show') ? '👁️ Hide Solution' : '👁️ Show Solution';
+            }
+        }
+        
+        hljs.highlightAll();
+    </script>
+</body>
+</html>
